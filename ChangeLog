@@ -1,3 +1,7 @@
+2003-01-13  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-emacs.el (process-node): Abolished.
+
 2002-09-25  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mi-util.el (mode-info-obarray, mode-info-method-obarray): Use 0
