@@ -1,5 +1,8 @@
 2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-util.el (line-beginning-position): Defined to avoid
+	byte-compile warning in XEmacs.
+
 	* mi-emacs.el (toplevel): Require `mi-config'.
 	(function-document, variable-document): Use
 	`mode-info-with-help-buffer'.

@@ -68,6 +68,17 @@ STRING should be given if the last search was by `string-match' on STRING."
 	    (buffer-substring-no-properties (match-beginning num)
 					    (match-end num)))))))
 
+(unless (fboundp 'line-beginning-position)
+  (if (fboundp 'point-at-bol)
+      (defalias 'line-beginning-position 'point-at-bol)
+    (defun line-beginning-position (&optional N)
+      "Return the character position of the first character on the current line.
+With argument N not nil or 1, move forward N - 1 lines first.  If scan
+reaches end of buffer, return that position."
+      (save-excursion
+	(forward-line (if N (1- N) 0))
+	(point)))))
+
 
 ;;; Object System:
 (eval-and-compile
