@@ -1,6 +1,6 @@
 ;;; mi-libc.el --- Mode-info backend for Info of libc
 
-;; Copyright (C) 2001-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2001,2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: libc info
@@ -89,30 +89,13 @@
       (goto-char orig-point)
       (set-syntax-table orig-table))))
 
-(defun mode-info-libc-completing-read (alist)
-  (let* ((default (mode-info-libc-word-at-point alist))
-	 (input (completing-read
-		 (if default
-		     (format "Show info (default %s): " default)
-		   (format "Show info: "))
-		 alist nil t)))
-    (if (equal input "") default input)))
-
 (mode-info-defmethod function-at-point ((class libc))
   (mode-info-load-index class)
   (mode-info-libc-word-at-point (mode-info-function-alist class)))
 
-(mode-info-defmethod read-function ((class libc))
-  (mode-info-load-index class)
-  (mode-info-libc-completing-read (mode-info-function-alist class)))
-
 (mode-info-defmethod variable-at-point ((class libc))
   (mode-info-load-index class)
   (mode-info-libc-word-at-point (mode-info-variable-alist class)))
-
-(mode-info-defmethod read-variable ((class libc))
-  (mode-info-load-index class)
-  (mode-info-libc-completing-read (mode-info-variable-alist class)))
 
 (defun mode-info-libc-make-index ()
   "Make index of Info files listed in `mode-info-libc-titles'."
