@@ -57,7 +57,7 @@
   '("ruby-jp.info")
   "*Info titles about Ruby."
   :group 'mode-info-ruby
-  :type '(repeat string))
+  :type mode-info-titles-type)
 
 (defconst mode-info-ruby-entry-regexp
   "^ +-.+\\(Method\\|Function\\|Variable\\)[^:]*: \\([^ \t\n]+\\)")

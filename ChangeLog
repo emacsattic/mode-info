@@ -1,5 +1,8 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-ruby.el (mode-info-ruby-titles): Refer
+	`mode-info-title-types' as its type.
+
 	* mi-perl.el (mode-info-perl-titles): Refer
 	`mode-info-title-types' as its type.
 
