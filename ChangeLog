@@ -1,3 +1,8 @@
+2003-02-09  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* elisp-comp.in (elisp-comp-target): Exclude `mi-fontify.el' from
+	target files for Mule2.
+
 2003-01-13  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mode-info.el (mode-info-version): Release 0.1.4.

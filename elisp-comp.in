@@ -82,6 +82,8 @@
       (setq sources (delete (car x) sources)
 	    x (cdr x)))
     (setq x (nconc head sources last))
+    (if (boundp 'MULE)
+	(setq x (delete "mi-fontify.el" x)))
     (while x
       (princ (concat (car x) "c\n") t)
       (setq x (cdr x)))))
