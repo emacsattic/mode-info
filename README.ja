@@ -53,6 +53,8 @@ mode-info ----- Commands to show Info descriptions.
            make index
            make install-index
 
+       以前に作成した索引を再利用したい場合は，この操作は省略できます．
+
    (4) 最後に，~/.emacs に以下の設定を追加してください．
 
            (require 'mi-config)
