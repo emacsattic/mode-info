@@ -38,6 +38,7 @@
     "Display the full documentation of FUNCTION (a symbol)." t)
   (autoload 'mode-info-describe-variable "mode-info"
     "Display the full documentation of VARIABLE (a symbol)." t)
+  (autoload 'mode-info-make-all-indices "mi-index" nil t)
   (autoload 'mode-info-elisp-add-function-button "mi-elisp")
   (autoload 'mode-info-elisp-add-variable-button "mi-elisp"))
 
