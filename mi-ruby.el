@@ -54,7 +54,7 @@
   :type 'file)
 
 (defcustom mode-info-ruby-titles
-  '("ruby-jp.info")
+  '("ruby-jp")
   "*Info titles about Ruby."
   :group 'mode-info-ruby
   :type mode-info-titles-type)
