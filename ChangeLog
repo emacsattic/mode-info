@@ -1,3 +1,8 @@
+2004-01-03  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mode-info.el (mode-info-show-document): Not activate the mark
+	which is moved to the top of the specified document.
+
 2003-12-14  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mi-elisp.el (describe-variable-internal): Treat buffer-local

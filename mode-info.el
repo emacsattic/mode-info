@@ -435,7 +435,7 @@ Return nil if there is no such symbol.")
       (with-current-buffer buffer
 	(set-window-buffer new (current-buffer))
 	(goto-char point)
-	(push-mark point t t)
+	(push-mark point t nil)
 	(unless (bobp)
 	  (recenter 2)))
       (unless (or keep-window mode-info-select-window)
