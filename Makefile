@@ -1,4 +1,4 @@
-SRC = mode-info.el mi-util.el mi-index.el mi-elisp.el mi-perl.el mi-libc.el mi-ruby.el
+SRC = mode-info.el mi-util.el mi-index.el mi-elisp.el mi-perl.el mi-libc.el mi-ruby.el mi-octave.el
 
 EMACS = emacs
 FLAGS = -q -no-site-file -batch -eval '(setq mode-info-index-directory "'`pwd`'" load-path (cons "'`pwd`'" load-path))'
