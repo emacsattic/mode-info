@@ -40,6 +40,11 @@
     (require 'poe)
     (require 'pcustom))))
 
+(defconst mode-info-titles-type
+  '(repeat (choice (string :tag "Title")
+		   (repeat :tag "Aliases" (string :tag "Title"))))
+  "A widget type for editing `mode-info-*-titles'.")
+
 (put 'mode-info-static-if 'lisp-indent-function 2)
 (defmacro mode-info-static-if (cond then &rest else)
   "Like `if', but evaluate COND at compile time."
@@ -190,6 +195,11 @@ entity."
 						    (copy-sequence args))))))
 		      ,@body)))
 	      `(function (lambda ,args ,@body))))))
+
+(defun mode-info-method-next (&rest args)
+  "Call the next method in the current method function.
+IMPORTANT NOTICE: It is disabled using this function out of methods."
+  (signal 'mode-info-void-method nil))
 
 (provide 'mi-util)
 

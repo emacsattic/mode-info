@@ -1,5 +1,8 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-util.el (mode-info-titles-type): New constant.
+	(mode-info-method-next): New function.
+
 	* mi-ruby.el (mode-info-ruby-titles): Refer
 	`mode-info-title-types' as its type.
 
