@@ -170,10 +170,18 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 
 (mode-info-defmethod describe-variable-internal ((class elisp) variable
 						 &optional keep-window)
-  (mode-info-method-next)
-  (when (mode-info-variable-described-p class variable)
-    (message "%s's value is %s"
-	     variable (prin1-to-string (symbol-value variable)))))
+  (let ((value (symbol-value variable))
+	(buffer (when (local-variable-p variable) (buffer-name))))
+    (mode-info-method-next)
+    (when (mode-info-variable-described-p class variable)
+      (if buffer
+	  (message "%s's local value is %s in buffer %s; %s"
+		   variable (prin1-to-string value) buffer
+		   (if (default-boundp variable)
+		       (format "global value is %s"
+			       (prin1-to-string (default-value variable)))
+		     "globally void"))
+	(message "%s's value is %s" variable (prin1-to-string value))))))
 
 (mode-info-defmethod read-tag ((class elisp))
   (let* ((default (or (mode-info-variable-at-point class)

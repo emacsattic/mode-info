@@ -1,3 +1,8 @@
+2003-12-14  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-elisp.el (describe-variable-internal): Treat buffer-local
+	variable.
+
 2003-02-09  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mi-config.el (mode-info-advise-describe-commands): Disable for
