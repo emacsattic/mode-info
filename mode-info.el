@@ -83,7 +83,8 @@
     (cperl-mode . perl)
     (eperl-mode . perl)
     (c-mode . libc)
-    (ruby-mode . ruby))
+    (ruby-mode . ruby)
+    (octave-mode . octav))
   "Alist of major modes and mode-info backends.")
 
 (defun mode-info-read-mode (&optional prompt)
