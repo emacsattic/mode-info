@@ -1,8 +1,15 @@
 2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* mi-elisp.el (toplevel): Require `mi-config' to use the macro
+	* mi-emacs.el (toplevel): Require `mi-config'.
+	(function-document, variable-document): Use
 	`mode-info-with-help-buffer'.
-	(function-document, variable-document): Use the above macro.
+	(mode-info-emacs-add-function-button): Use
+	`mode-info-elisp-insert-button'.
+	(mode-info-emacs-add-variable-button): Ditto.
+
+	* mi-elisp.el (toplevel): Require `mi-config'.
+	(function-document, variable-document): Use
+	`mode-info-with-help-buffer'.
 	(mode-info-elisp-insert-button): New function.
 	(mode-info-elisp-add-function-button): Use the above function.
 	(mode-info-elisp-add-variable-button): Ditto.

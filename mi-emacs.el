@@ -35,6 +35,7 @@
 (require 'mi-elisp)
 (eval-when-compile
   (require 'cl)
+  (require 'mi-config) ; For mode-info-with-help-buffer
   (require 'mi-index))
 
 (defgroup mode-info-emacs nil
@@ -57,17 +58,13 @@
 
 (mode-info-defmethod function-document ((class emacs) function)
   (describe-function function)
-  (mode-info-static-if (featurep 'xemacs)
-      (cons (current-buffer) (point-min))
-    (with-current-buffer "*Help*"
-      (cons (current-buffer) (point-min)))))
+  (mode-info-with-help-buffer
+    (cons (current-buffer) (point-min))))
 
 (mode-info-defmethod variable-document ((class emacs) variable)
   (describe-variable variable)
-  (mode-info-static-if (featurep 'xemacs)
-      (cons (current-buffer) (point-min))
-    (with-current-buffer "*Help*"
-      (cons (current-buffer) (point-min)))))
+  (mode-info-with-help-buffer
+    (cons (current-buffer) (point-min))))
 
 (defun mode-info-emacs-goto-info (symbol &optional variable-p)
   (let ((class (mode-info-find-class 'emacs)))
@@ -84,44 +81,40 @@
      t)))
 
 (defun mode-info-emacs-add-function-button (function)
-  (mode-info-static-if (fboundp 'help-insert-xref-button)
-      (let ((buffer-read-only)
-	    (class (mode-info-find-class 'emacs)))
-	(when (mode-info-function-described-p class function)
-	  (save-excursion
-	    (save-match-data
-	      (goto-char (point-max))
-	      (if (re-search-backward "\\[[-a-z]+\\]"
-				      (line-beginning-position) t)
-		  (progn
-		    (end-of-line)
-		    (insert " "))
-		(insert (if (bolp) "\n" "\n\n")))
-	      (help-insert-xref-button "[emacs-info]"
-				       'mode-info-emacs-goto-info
-				       (list function)
-				       "mouse-2, Ret: go to Info.")))))
-    (ignore)))
+  (let ((buffer-read-only)
+	(class (mode-info-find-class 'emacs)))
+    (when (mode-info-function-described-p class function)
+      (save-excursion
+	(save-match-data
+	  (goto-char (point-max))
+	  (if (re-search-backward "\\[[-a-z]+\\]"
+				  (line-beginning-position) t)
+	      (progn
+		(end-of-line)
+		(insert " "))
+	    (insert (if (bolp) "\n" "\n\n")))
+	  (mode-info-elisp-insert-button "[emacs-info]"
+					 'mode-info-emacs-goto-info
+					 (list function)
+					 "mouse-2, Ret: go to Info."))))))
 
 (defun mode-info-emacs-add-variable-button (variable)
-  (mode-info-static-if (fboundp 'help-insert-xref-button)
-      (let ((buffer-read-only)
-	    (class (mode-info-find-class 'emacs)))
-	(when (mode-info-variable-described-p class variable)
-	  (save-excursion
-	    (save-match-data
-	      (goto-char (point-max))
-	      (if (re-search-backward "\\[[-a-z]+\\]"
-				      (line-beginning-position) t)
-		  (progn
-		    (end-of-line)
-		    (insert " "))
-		(insert (if (bolp) "\n" "\n\n")))
-	      (help-insert-xref-button "[emacs-info]"
-				       'mode-info-emacs-goto-info
-				       (list variable t)
-				       "mouse-2, Ret: go to Info.")))))
-    (ignore)))
+  (let ((buffer-read-only)
+	(class (mode-info-find-class 'emacs)))
+    (when (mode-info-variable-described-p class variable)
+      (save-excursion
+	(save-match-data
+	  (goto-char (point-max))
+	  (if (re-search-backward "\\[[-a-z]+\\]"
+				  (line-beginning-position) t)
+	      (progn
+		(end-of-line)
+		(insert " "))
+	    (insert (if (bolp) "\n" "\n\n")))
+	  (mode-info-elisp-insert-button "[emacs-info]"
+					 'mode-info-emacs-goto-info
+					 (list variable t)
+					 "mouse-2, Ret: go to Info."))))))
 
 (defun mode-info-emacs-make-index ()
   "Make index of Info files listed in `mode-info-emacs-titles'."
