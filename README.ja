@@ -1,83 +1,82 @@
-mode-info ----- Describe functions and variables
-
-これは，メジャーモードに対応して適切な関数・変数の説明を表示するように 
-describe-function / describe-variable を拡張するプログラムです．
+mode-info ----- Commands to show Info descriptions.
 
 
-■ 概要
+1. 概要
 
-   Emacs-Lisp や Perl のプログラムを編集中に，変数や関数の説明を簡単に参
-   照するためのコマンドを提供します．
+   これは，メジャーモードに対応して適切な関数・変数の説明を表示するよう
+   に describe-function / describe-variable を拡張するプログラムです．
 
    describe-function や describe-variable と非常に良く似ていますが，編集
    中のバッファの major-mode に応じて，適切な Info を選択・表示する点が
    異なります．
 
+   最新版は，以下の場所から入手することができます．
 
-■ インストール
+       http://namazu.org/~tsuchiya/elisp/mode-info.tar.gz
+
+
+2. 対応している Info
+
+   現在，以下の Info に対応しています．
+
+       Emacs-Lisp Reference Manual
+       Emacs Manual
+       GNU C Library Reference Manual
+       Ruby Reference Manual (Japanese)
+       Perl Reference Manual (Japanese)
+       Octave Reference Manual
+
+
+3. インストール
 
    事前に，変数や関数の説明が記述されている Info を Emacs から閲覧できる
-   ようにインストールしてください．現在，
+   ようにインストールしてください．
 
-       emacs-lisp
-       perl
-       libc
-       ruby
-       octave
+   (1) 最初に configure を実行してください．
 
-   の Info を参照することができます．詳細については，各 Info に対応する 
-   mi-"language".el 先頭のコメントを参照してください．
+           ./configure
 
-   続いて，以下の手順でプログラムをインストールし，閲覧対象となる Info 
-   の索引を作成してください．
+       このコマンドは，本パッケージを構築するために必要な準備を行います．
+       もし，閲覧したい Info が非標準的な場所にインストールされている場
+       合は，その場所を以下のように指定する必要があるかも知れません．
+   
+           ./configure --with-info-addpath=~/info
 
-       tar xzf mode-info-x.y.z.tar.gz
-       ./configure
-       make
-       make install
-       make index
-       make install-index
+   (2) 以下のコマンドを実行して，プログラムをインストールしてください．
 
-   閲覧したい Info を見つけられなかった場合は，--with-info-addpath オプ
-   ションを使って，Info のインストール場所を明示的に指定してみてください．
+           make
+           make install
 
-       ./configure --with-info-addpath=~/info
+   (3) 以下のコマンドを実行して，閲覧対象となる Info の索引を作成し，索
+       引をインストールしてください．
 
-   続いて，~/.emacs に以下の設定を追加してください．
+           make index
+           make install-index
 
-       (require 'mi-config)
-       (define-key global-map "\C-hf" 'mode-info-describe-function)
-       (define-key global-map "\C-hF" 'describe-function)
-       (define-key global-map "\C-hv" 'mode-info-describe-variable)
-       (define-key global-map "\C-hV" 'describe-variable)
-       (define-key global-map "\M-." 'mode-info-find-tag)
+   (4) 最後に，~/.emacs に以下の設定を追加してください．
 
-   カラフルな Info が好みの人は，以下の設定も追加してください．
+           (require 'mi-config)
+           (define-key global-map "\C-hf" 'mode-info-describe-function)
+           (define-key global-map "\C-hv" 'mode-info-describe-variable)
+           (define-key global-map "\M-." 'mode-info-find-tag)
 
-       (require 'mi-fontify)
+       カラフルな Info が好みの人は，以下の設定も追加してください．
 
-   configure が実行できない環境では，全ての emacs-lisp プログラムを 
-   byte-compile し，適当なディレクトリにプログラム類をコピーしてください．
-   その後，上述の設定を行ってから，
+           (require 'mi-fontify)
+
+   configure が実行できない環境にインストールする場合は，全てのプログラ
+   ムを byte-compile し，適当なディレクトリにプログラム類をコピーしてく
+   ださい．その後，上述の設定を行ってから，
 
        M-x mode-info-make-all-indices RET
 
    とすると，索引が作成されます．
 
 
-■ 動作環境
+4. 連絡先
 
-   多分，以下の環境で動作する…と思うのですが．
+   土屋 雅稔 <tsuchiya@namazu.org>
 
-       Emacs 21.x
-       Emacs 20.x
-       XEmacs
-       Mule 2.3 based Emacs 19.34 with APEL
-
-
-■ 連絡先
-
-   TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 
 Local Variables:
