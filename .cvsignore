@@ -2,11 +2,12 @@
 *.elc
 *.idx
 *.idx.bak*
-mode-info-*
 Makefile
+autom4te.cache
+confdefs.h
 config.cache
 config.log
 config.status*
 configure
-autom4te.cache
-confdefs.h
+elisp-comp
+mode-info-*
