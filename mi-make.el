@@ -25,10 +25,16 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info titles which
-;; describes make.
+;; This file provides mode-info backend stuffes to see the manual of
+;; GNU make utility.  It is included in the source package of GNU make
+;; utility, which can be downloaded from:
+;;
+;;     ftp://ftp.gnu.org/gnu/make/
+;;
+;; Its Japanese version can be downloaded from:
+;;
+;;     ftp://ftp.ascii.co.jp/pub/GNU/make/make-jp-3.79.1.tgz
 
-;; ftp://ftp.ascii.co.jp/pub/GNU/make/make-jp-3.79.1.tgz
 
 ;;; Code:
 

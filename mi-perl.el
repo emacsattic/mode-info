@@ -1,4 +1,4 @@
-;;; mi-perl.el --- Mode-info backend for perl-mode -*- coding: iso-2022-7bit; -*-
+;;; mi-perl.el --- Mode-info backend for Perl -*- coding: iso-2022-7bit; -*-
 
 ;; Copyright (C) 1998-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
@@ -25,8 +25,8 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes Perl.
-;; It can be downloaded from:
+;; This file provides mode-info backend stuffs to see the Info
+;; document of Perl.  It can be downloaded from:
 ;;
 ;;    http://namazu.org/~tsuchiya/doc/perl5.000texi-j.tar.gz
 

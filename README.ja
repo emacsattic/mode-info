@@ -19,12 +19,16 @@ mode-info ----- Commands to show Info descriptions.
 
    現在，以下の Info に対応しています．
 
-       Emacs-Lisp Reference Manual
+       Emacs Lisp Reference Manual
        Emacs Manual
        GNU C Library Reference Manual
        Ruby Reference Manual (Japanese)
        Perl Reference Manual (Japanese)
        Octave Reference Manual
+       SLIB Reference Manual
+       Guile Reference Manual
+       Gauche Reference Manual
+       Make Manual
 
 
 3. インストール

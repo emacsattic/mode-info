@@ -1,4 +1,4 @@
-;;; mi-elisp.el --- Mode-info backend for emacs-lisp-mode -*- coding: iso-2022-7bit; -*-
+;;; mi-elisp.el --- Mode-info backend for Emacs Lisp Reference Manual -*- coding: iso-2022-7bit; -*-
 
 ;; Copyright (C) 1998-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
@@ -25,13 +25,17 @@
 
 ;;; Commentary:
 
-;; This file provides Info interface commands for major-modes related
-;; to Emacs-Lisp.  These documents are available with this package.
+;; This file provides mode-info backend stuffs to see the GNU Emacs
+;; Lisp Reference Manual, which can be downloaded from:
 ;;
-;;   Japanese Info for Emacs 20
+;;     ftp://ftp.gnu.org/pub/gnu/emacs/elisp-manual-21-2.7a.tar.gz
+;;
+;; The Japanese version of its edition 2.5 can be downloaded from:
+;;
 ;;     ftp://ftp.ascii.co.jp/pub/GNU/elisp-manual-20-2.5-jp.tgz
 ;;
-;;   Japanese Info for Emacs 19
+;; The Japanese version of itsh edition 2.4 can be downloaded from:
+;;
 ;;     ftp://etlport.etl.go.jp/pub/mule/elisp-manual-19-2.4-jp2.0.tar.gz
 
 

@@ -27,16 +27,16 @@
 
 ;; This package provides improved describe-function and
 ;; describe-variable and combines major modes to edit programming
-;; languages and its Info closely.
+;; languages and their Info documentats closely.
 ;;
 ;; `mode-info-describe-function' which is one of commands defined by
-;; this package, is very similar to `describe-function', but can select
-;; the appropriate document based on major-mode.  For example, when it
-;; called in c-mode, it retrieves the documentation of the specified
-;; function from GNU C Library Reference Manual, and shows it.  When it
-;; called in emacs-lisp-mode, it retrieves the documentation from
-;; Emacs-Lisp Reference Manual.  If failure it shows a documentation
-;; string.
+;; this package, is very similar to `describe-function', but can
+;; select the appropriate document based on major-mode.  For example,
+;; when it is called in c-mode buffers, it retrieves the documentation
+;; of the specified function from GNU C Library Reference Manual and
+;; shows it.  When it is called in emacs-lisp-mode buffers, it
+;; retrieves the documentation from Emacs Lisp Reference Manual and
+;; shows it.  If failure it shows a documentation string.
 ;;
 ;; The latest version of this package can be downloaded from:
 ;;
@@ -67,7 +67,7 @@
 ;;         make install
 ;;
 ;; (3) Execute these commands to make indices of all available Info
-;;     titles and to install them.
+;;     documents and to install them.
 ;;
 ;;         make index
 ;;         make install-index

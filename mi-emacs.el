@@ -25,8 +25,16 @@
 
 ;;; Commentary:
 
-;; This file provides Info interface commands for major-modes related
-;; to Emacs-Lisp.  These titles are available with this package.
+;; This file provides mode-info backend stuffs to see the Info manual
+;; of GNU Emacs.  It is included in the source package of GNU Emacs,
+;; which can be downloaded from:
+;;
+;;     ftp://ftp.gnu.org/pub/gnu/emacs/
+;;
+;; Its Japanese version corresponding to GNU Emacs version 20.6 can be
+;; downloaded from:
+;;
+;;     ftp://ftp.ascii.co.jp/pub/GNU/emacs-20.x/emacs-20.6-man-jp.tgz.
 
 
 ;;; Code:

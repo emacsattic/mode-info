@@ -25,8 +25,11 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info titles which
-;; describes libc.
+;; This file provides mode-info backend stuffs to see GNU C Library
+;; Reference Manual.  It is included in the source package of GNU C
+;; Library, which can be downloaded from:
+;;
+;;    ftp://sourceware.cygnus.com/pub/glibc/releases/
 
 
 ;;; Code:

@@ -1,4 +1,4 @@
-;;; mi-octave.el --- Mode-info backend for octave-mode
+;;; mi-octave.el --- Mode-info backend for Octave
 
 ;; Copyright (C) 1999 Rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2001,2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
@@ -30,8 +30,8 @@
 ;; Original code was octave-info.el written by
 ;; Rubikitch <rubikitch@ruby-lang.org>.
 
-;; This file provides interface commands of Info titles which
-;; describes octave.
+;; This file provides mode-info backend stuffs to see the manual of
+;; GNU Octave.
 
 
 ;;; Code:

@@ -1,4 +1,4 @@
-;;; mi-gauche.el --- Mode-info backend for gauche -*- coding: iso-2022-7bit -*-
+;;; mi-gauche.el --- Mode-info backend for Gauche -*- coding: iso-2022-7bit -*-
 
 ;; Copyright (C) 2002,2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
@@ -25,9 +25,9 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes
-;; Gauche.  It is an R5RS Scheme implementation developed to be a
-;; handy script interpreter.  It can be downloaded from:
+;; This file provides mode-info backend stuffs to see the reference
+;; manual of Gauche, which is a R5RS Scheme implementation developed
+;; to be a handy script interpreter.  It can be downloaded from:
 ;;
 ;;    http://www.shiro.dreamhost.com/scheme/gauche/
 

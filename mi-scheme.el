@@ -25,8 +25,8 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes
-;; Scheme.
+;; This file provides mode-info backend stuffs to handle Info
+;; documents about Scheme.
 ;;
 ;; Info manual of SLIB is distributed with its official distribution.
 ;; It can be downloaded from:

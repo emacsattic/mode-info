@@ -1,4 +1,4 @@
-;;; mi-guile.el --- Mode-info backend for guile -*- coding: iso-2022-7bit -*-
+;;; mi-guile.el --- Mode-info backend for Guile -*- coding: iso-2022-7bit -*-
 
 ;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
@@ -25,11 +25,14 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes
-;; Guile.  It is an interpreter for the Scheme programming language,
-;; developed by GNU.
-
-;; Japanese version of Guile Reference Manual can be downloaded from:
+;; This file provides mode-info backend stuffs to see the reference
+;; manual of GNU Guile.  It is an interpreter for the Scheme
+;; programming language, developed by GNU.  Its manual can be
+;; downloaded from Guile's anonymous CVS.
+;;
+;;     http://www.gnu.org/software/guile/anon-cvs.html
+;;
+;; Its Japanese version can be downloaded from:
 ;;
 ;;    http://www.kt.rim.or.jp/~kbk/index.html
 ;;    http://www.kt.rim.or.jp/~kbk/guile/guile1.zip

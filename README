@@ -10,11 +10,11 @@ mode-info ----- Commands to show Info descriptions.
    `mode-info-describe-function' which is one of commands defined by
    this package, is very similar to `describe-function', but can select
    the appropriate document based on major-mode.  For example, when it
-   called in c-mode, it retrieves the documentation of the specified
-   function from GNU C Library Reference Manual, and shows it.  When it
-   called in emacs-lisp-mode, it retrieves the documentation from
-   Emacs-Lisp Reference Manual.  If failure it shows a documentation
-   string.
+   is called in c-mode buffers, it retrieves the documentation of the
+   specified function from GNU C Library Reference Manual and shows it.
+   When it is called in emacs-lisp-mode buffers, it retrieves the
+   documentation from Emacs Lisp Reference Manual and shows it.  If
+   failure it shows a documentation string.
 
    The latest version of this package can be downloaded from:
 
@@ -25,12 +25,16 @@ mode-info ----- Commands to show Info descriptions.
 
    Following texinfo documents are supported.
 
-       Emacs-Lisp Reference Manual
+       Emacs Lisp Reference Manual
        Emacs Manual
        GNU C Library Reference Manual
        Ruby Reference Manual (Japanese)
        Perl Reference Manual (Japanese)
        Octave Reference Manual
+       SLIB Reference Manual
+       Guile Reference Manual
+       Gauche Reference Manual
+       Make Manual
 
 
 3. Install
@@ -57,7 +61,7 @@ mode-info ----- Commands to show Info descriptions.
            make install
 
    (3) Execute these commands to make indices of all available Info
-       titles and to install them.
+       documents and to install them.
 
            make index
            make install-index
