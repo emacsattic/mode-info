@@ -52,7 +52,7 @@
   :type 'file)
 
 (defcustom mode-info-octave-titles
-  '("octave.info")
+  '("octave")
   "*Info titles about Octave."
   :group 'mode-info-octave
   :type mode-info-titles-type)

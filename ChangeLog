@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-octave.el (mode-info-octave-titles): Change its default.
+
 	* mi-libc.el (mode-info-libc-titles): Change its default.
 
 	* mi-index.el (mode-info-read-coding-system): Renamed from
