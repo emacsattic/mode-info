@@ -25,7 +25,18 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes Guile.
+;; This file provides interface commands of Info which describes
+;; Guile.  It is an interpreter for the Scheme programming language,
+;; developed by GNU.
+
+;; Japanese version of Guile Reference Manual can be downloaded from:
+;;
+;;    http://www.kt.rim.or.jp/~kbk/index.html
+;;    http://www.kt.rim.or.jp/~kbk/guile/guile1.zip
+;;    http://www.kt.rim.or.jp/~kbk/guile/guile2.zip
+;;
+;; These are translated by KIMURA Koichi <kbk@kt.rim.or.jp>.  I'd like
+;; to address my thanks to him for his nice work.
 
 
 ;;; Code:

@@ -25,7 +25,11 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes Gauche.
+;; This file provides interface commands of Info which describes
+;; Gauche.  It is an R5RS Scheme implementation developed to be a
+;; handy script interpreter.  It can be downloaded from:
+;;
+;;    http://www.shiro.dreamhost.com/scheme/gauche/
 
 
 ;;; Code:
