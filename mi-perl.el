@@ -81,32 +81,15 @@ Local[ \t]+Variable\\|User[ \t]+Option\\):[ \t]+\\([^ \t\n]+\\)[ \t\n]")
       (goto-char orig-point)
       (set-syntax-table orig-table))))
 
-(defun mode-info-perl-completing-read (alist)
-  (let* ((default (mode-info-perl-word-at-point alist))
-	 (input (completing-read
-		 (if default
-		     (format "Show info (default %s): " default)
-		   (format "Show info: "))
-		 alist nil t)))
-    (if (equal input "") default input)))
-
 (mode-info-defclass perl)
 
 (mode-info-defmethod function-at-point ((class perl))
   (mode-info-load-index class)
   (mode-info-perl-word-at-point (mode-info-function-alist class)))
 
-(mode-info-defmethod read-function ((class perl))
-  (mode-info-load-index class)
-  (mode-info-perl-completing-read (mode-info-function-alist class)))
-
 (mode-info-defmethod variable-at-point ((class perl))
   (mode-info-load-index class)
   (mode-info-perl-word-at-point (mode-info-variable-alist class)))
-
-(mode-info-defmethod read-variable ((class perl))
-  (mode-info-load-index class)
-  (mode-info-perl-completing-read (mode-info-variable-alist class)))
 
 (defun mode-info-perl-make-index ()
   "Make index of Info files listed in `mode-info-perl-titles'."
