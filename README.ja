@@ -73,7 +73,17 @@ mode-info ----- Commands to show Info descriptions.
    とすると，索引が作成されます．
 
 
-4. 連絡先
+4. TODO
+
+   --> 対応文書の拡充．文書クラスを作成するためのドキュメント整備．
+
+   --> C-h C-i (info-lookup-symbol) とよく似ている．Emacs にこんな機能が
+       あったとは，まったく知らなかった．
+       --> 事前に索引を作成している分だけ，mode-info の方が高速．
+       --> 対応文書は今のところ info-look.el が15個と多い．
+
+
+5. 連絡先
 
    土屋 雅稔 <tsuchiya@namazu.org>
 
