@@ -1,3 +1,13 @@
+2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-config.el (toplevel): Add autoloads.
+	(mode-info-with-help-buffer): New macro.
+	(mode-info-elisp-add-function-button): Use the above macro.
+	(mode-info-elisp-add-variable-button): Ditto.
+	(mode-info-elisp-add-command-button): New advice.
+	(mode-info-emacs-command-node): New option.
+	(mode-info-emacs-command-node): New advice.
+
 2002-07-19  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* Release 0.0.3.

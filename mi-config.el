@@ -42,31 +42,63 @@
     "Find TAG and display it." t)
   (autoload 'mode-info-make-all-indices "mi-index" nil t)
   (autoload 'mode-info-elisp-add-function-button "mi-elisp")
-  (autoload 'mode-info-elisp-add-variable-button "mi-elisp"))
+  (autoload 'mode-info-elisp-add-variable-button "mi-elisp")
+  (autoload 'mode-info-emacs-add-function-button "mi-emacs")
+  (autoload 'mode-info-emacs-add-variable-button "mi-emacs")
+  (autoload 'mode-info-emacs-goto-info "mi-emacs"))
+
+(put 'mode-info-with-help-buffer 'lisp-indent-function 0)
+(put 'mode-info-with-help-buffer 'edebug-form-spec t)
+(defmacro mode-info-with-help-buffer (&rest body)
+  (if (featurep 'xemacs)
+      `(progn ,@body)
+    `(with-current-buffer "*Help*" ,@body)))
 
 (let (current-load-list)
-  (mode-info-static-if (featurep 'xemacs)
-      (defadvice describe-function
-	(after mode-info-elisp-add-function-button activate compile)
-	"Add a button which runs `mode-info-describe-function'."
-	(mode-info-elisp-add-function-button (ad-get-arg 0)))
-    (defadvice describe-function
-      (after mode-info-elisp-add-function-button activate compile)
-      "Add a button which runs `mode-info-describe-function'."
-      (with-current-buffer "*Help*"
-	(mode-info-elisp-add-function-button (ad-get-arg 0))))))
+  (defadvice describe-function
+    (after mode-info-elisp-add-function-button activate compile)
+    "Advised by `mode-info'.
+Add a button which runs `mode-info-describe-function'."
+    (mode-info-with-help-buffer
+      (mode-info-elisp-add-function-button (ad-get-arg 0))
+      (mode-info-emacs-add-function-button (ad-get-arg 0)))))
 
 (let (current-load-list)
-  (mode-info-static-if (featurep 'xemacs)
-      (defadvice describe-variable
-	(after mode-info-elisp-add-variable-button activate compile)
-	"Add a button which runs `mode-info-describe-variable'."
-	(mode-info-elisp-add-variable-button (ad-get-arg 0)))
-    (defadvice describe-variable
-      (after mode-info-elisp-add-variable-button activate compile)
-      "Add a button which runs `mode-info-describe-variable'."
-      (with-current-buffer "*Help*"
-	(mode-info-elisp-add-variable-button (ad-get-arg 0))))))
+  (defadvice describe-variable
+    (after mode-info-elisp-add-variable-button activate compile)
+    "Advised by `mode-info'.
+Add a button which runs `mode-info-describe-variable'."
+    (mode-info-with-help-buffer
+      (mode-info-elisp-add-variable-button (ad-get-arg 0))
+      (mode-info-emacs-add-variable-button (ad-get-arg 0)))))
+
+(let (current-load-list)
+  (defadvice describe-key
+    (after mode-info-elisp-add-command-button activate compile)
+    "Advised by `mode-info'.
+Add a button which runs `mode-info-describe-function'."
+    (let ((f (or (string-key-binding (ad-get-arg 0))
+		 (key-binding (ad-get-arg 0)))))
+      (when f
+	(mode-info-with-help-buffer
+	  (mode-info-elisp-add-function-button f)
+	  (mode-info-emacs-add-function-button f))))))
+
+(defcustom mode-info-emacs-command-node t
+  "*Nil means that the advice, `mode-info-emacs-command-node', is deactivated."
+  :group 'mode-info
+  :type 'boolean)
+
+(let (current-load-list)
+  (defadvice Info-goto-emacs-command-node
+    (around mode-info-emacs-command-node activate compile)
+    "Advised by `mode-info'.
+Search documents in Infos specified in `mode-info-emacs-titles',
+instead of \"emacs\".  Check `mode-info-emacs-command-node' also."
+    (if mode-info-emacs-command-node
+	(or (mode-info-emacs-goto-info (ad-get-arg 0))
+	    ad-do-it)
+      ad-do-it)))
 
 (provide 'mi-config)
 
