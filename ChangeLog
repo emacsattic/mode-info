@@ -23,9 +23,9 @@
 
 	* mi-config.el (toplevel): Add autoload for `mode-info-find-tag'.
 
-	* elisp-comp.in (toplevel): Install codes to avoid byte-compile
-	warnings for XEmacs and Mule.  This change is suggested by
-	Katsumi Yamaoka <yamaoka@jpl.org>.
+	* elisp-comp.in (toplevel): Install workaround to suppress
+	byte-compile warnings for XEmacs and Mule.  This change is
+	suggested by Katsumi Yamaoka <yamaoka@jpl.org>.
 
 	* aclocal.m4 (AC_ADD_LOAD_PATH): Fix typo.
 
