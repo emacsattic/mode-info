@@ -1,1 +1,88 @@
-執筆中．
+mode-info ----- Describe functions and variables
+
+これは，メジャーモードに対応して適切な関数・変数の説明を表示するように 
+describe-function / describe-variable を拡張するプログラムです．
+
+
+■ 概要
+
+   Emacs-Lisp や Perl のプログラムを編集中に，変数や関数の説明を簡単に参
+   照するためのコマンドを提供します．
+
+   describe-function や describe-variable と非常に良く似ていますが，編集
+   中のバッファの major-mode に応じて，適切な Info を選択・表示する点が
+   異なります．
+
+
+■ インストール
+
+   事前に，変数や関数の説明が記述されている Info を Emacs から閲覧できる
+   ようにインストールしてください．現在，
+
+       emacs-lisp
+       perl
+       libc
+       ruby
+       octave
+
+   の Info を参照することができます．詳細については，各 Info に対応する 
+   mi-"language".el 先頭のコメントを参照してください．
+
+   続いて，以下の手順でプログラムをインストールし，閲覧対象となる Info 
+   の索引を作成してください．
+
+       tar xzf mode-info-x.y.z.tar.gz
+       ./configure
+       make
+       make install
+       make index
+       make install-index
+
+   閲覧したい Info を見つけられなかった場合は，--with-info-addpath オプ
+   ションを使って，Info のインストール場所を明示的に指定してみてください．
+
+       ./configure --with-info-addpath=~/info
+
+   続いて，~/.emacs に以下の設定を追加してください．
+
+       (require 'mi-config)
+       (define-key global-map "\C-hf" 'mode-info-describe-function)
+       (define-key global-map "\C-hF" 'describe-function)
+       (define-key global-map "\C-hv" 'mode-info-describe-variable)
+       (define-key global-map "\C-hV" 'describe-variable)
+
+   カラフルな Info が好みの人は，以下の設定も追加してください．
+
+       (require 'mi-fontify)
+
+   configure が実行できない環境では，全ての emacs-lisp プログラムを 
+   byte-compile し，適当なディレクトリにプログラム類をコピーしてください．
+   その後，上述の設定を行ってから，
+
+       M-x mode-info-make-all-indices RET
+
+   とすると，索引が作成されます．
+
+
+■ 動作環境
+
+   多分，以下の環境で動作する…と思うのですが．
+
+       Emacs 21.x
+       Emacs 20.x
+       XEmacs
+       Mule 2.3 based Emacs 19.34 with APEL
+
+
+■ 連絡先
+
+   TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+
+
+Local Variables:
+mode: indented-text
+coding: euc-japan
+use-kuten-for-period: nil
+use-touten-for-comma: nil
+fill-column: 72
+End:
