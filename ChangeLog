@@ -2,6 +2,8 @@
 
 	* Release 0.1.
 
+	* mi-util.el (mode-info-static-if): Add edebug form spec.
+
 	* mi-config.el (mode-info-elisp-add-command-button): Advised for
 	only FSF Emacs.
 

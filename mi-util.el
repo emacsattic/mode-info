@@ -45,6 +45,7 @@
 		   (repeat :tag "Aliases" (string :tag "Title"))))
   "A widget type for editing `mode-info-*-titles'.")
 
+(put 'mode-info-static-if 'edebug-form-spec '(form form body))
 (put 'mode-info-static-if 'lisp-indent-function 2)
 (defmacro mode-info-static-if (cond then &rest else)
   "Like `if', but evaluate COND at compile time."
