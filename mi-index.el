@@ -51,9 +51,10 @@
 (defun mode-info-make-all-indices ()
   "Make indices of all available Info documents."
   (interactive)
-  (dolist (elem mode-info-class-alist)
+  (dolist (name mode-info-available-classes)
     (condition-case err
-	(let ((name (symbol-name (car elem))))
+	(progn
+	  (setq name (car name))
 	  (require (intern (concat "mi-" name)))
 	  (funcall (intern (concat mode-info-prefix name "-make-index"))))
       (error
@@ -123,6 +124,10 @@
   "\^_\nFile: [^,]*, +Node: +\\([^,\n\t]+\\)[,\n\t]"
   "Regular expression which match heads of Info nodes.")
 
+(defconst mode-info-index-node-regexp
+  "\\(\\`\\| \\)Index\\'"
+  "Regular expression which match Index node names.")
+
 (mode-info-defgeneric make-index-file (class)
   "Make index of functions and variables described in Info.")
 
@@ -157,7 +162,7 @@
 					  (1- (point))
 					(point-max)))
 		    (goto-char (point-min))
-		    (if (string-match "\\(\\`\\| \\)Index\\'" nodename)
+		    (if (string-match mode-info-index-node-regexp nodename)
 			;; Hold index nodes.
 			(let ((temp-buffer (current-buffer)))
 			  (with-current-buffer buffer
@@ -219,7 +224,7 @@
 		 (symbol-value symbol))))))
 
 (defconst mode-info-index-entry-regexp
-  "^\\* +\\([^\n:]*:*\\):[ \t]*\\([^.\n]*\\)\\.[ \t]*\\([0-9]*\\)"
+  "^\\* +\\([^\n]+\\):[ \t]*\\([^.\n]*\\)\\.[ \t]*\\([0-9]*\\)"
   "Regular expression which match entries in index nodes.")
 
 (mode-info-defgeneric process-index-node (class title nodename

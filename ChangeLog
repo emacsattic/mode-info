@@ -1,5 +1,11 @@
 2002-07-25  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-index.el (mode-info-make-all-indices): Refer
+	`mode-info-available-classes'.
+	(mode-info-index-node-regexp): New constant.
+	(make-index-file): Refer the above.
+	(mode-info-index-entry-regexp): Relaxed.
+
 	* mi-gauche.el: New file.
 
 2002-07-22  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
