@@ -236,8 +236,12 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	(defalias 'mode-info-insert-button 'help-insert-xref-button)
       (defun mode-info-insert-button (string type &rest args)
 	"Insert STRING and make a hyperlink."
-	(help-insert-xref-button string type args
-				 (mode-info-button-type-get type 'help-echo))))
+	(help-insert-xref-button string
+				 (mode-info-button-type-get type
+							    'help-function)
+				 args
+				 (mode-info-button-type-get type
+							    'help-echo))))
   (mode-info-static-if (fboundp 'help-xref-button)
       ;; The function is designed for Emacs-20.x, based on
       ;; `help-insert-xref-button' defined in help.el of Emacs-21.2.
@@ -247,8 +251,10 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (insert string)
 	  (goto-char pos)
 	  (search-forward string)
-	  (help-xref-button 0 type args)))
-    (defun mode-info-insert-button (string &rest args)
+	  (help-xref-button 0
+			    (mode-info-button-type-get type 'help-function)
+			    args)))
+    (defun mode-info-insert-button (string type &rest args)
       "Insert STRING (dummy function)."
       (insert string))))
 
