@@ -25,8 +25,14 @@
 
 ;;; Commentary:
 
-;; This file provides interface commands of Info which describes Scheme.
-
+;; This file provides interface commands of Info which describes
+;; Scheme.
+;;
+;; Info manual of SLIB is distributed with its official distribution.
+;; It can be downloaded from:
+;;
+;;     http://swissnet.ai.mit.edu/~jaffer/SLIB.html
+;;     http://swissnet.ai.mit.edu/ftpdir/scm/slib2d4.zip
 
 ;;; Code:
 
