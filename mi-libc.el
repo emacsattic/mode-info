@@ -50,7 +50,7 @@
   '("libc.info")
   "*Info titles about libc."
   :group 'mode-info-libc
-  :type '(repeat string))
+  :type mode-info-titles-type)
 
 (defconst mode-info-libc-entry-regexp
   (eval-when-compile

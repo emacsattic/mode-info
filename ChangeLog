@@ -1,5 +1,8 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-libc.el (mode-info-libc-titles): Refer
+	`mode-info-title-types' as its type.
+
 	* mi-index.el (mode-info-make-index): Follow the type change of
 	`mode-info-*-titles'.
 	(mode-info-search-info-files): Search files have `.info' suffix.
