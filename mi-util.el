@@ -51,6 +51,12 @@
   "Like `if', but evaluate COND at compile time."
   (if (eval cond) then `(progn ,@else)))
 
+(put 'mode-info-static-when 'edebug-form-spec '(form body))
+(put 'mode-info-static-when 'lisp-indent-function 1)
+(defmacro mode-info-static-when (cond &rest body)
+  "Like `when', but evaluate COND at compile time."
+  (if (eval cond) `(progn ,@body)))
+
 (eval-and-compile
   (unless (fboundp 'match-string-no-properties)
     (defun match-string-no-properties (num &optional string)

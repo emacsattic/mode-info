@@ -1,3 +1,15 @@
+2004-11-14  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
+
+	* mi-util.el (mode-info-static-when): New macro.
+
+	* mi-elisp.el (mode-info-elisp-insert-button): Use
+	insert-text-button if it is bound.
+
+	* mi-config.el (mode-info-advise-describe-commands): Enable for
+	emacsen with `define-button-type', such as Emacs-21.3.50.
+	(toplevel): Define buttons for help-mode if define-button-type is
+	bound.
+
 2004-01-03  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mode-info.el (mode-info-version): Release 0.8.

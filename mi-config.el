@@ -51,8 +51,7 @@
   (autoload 'mode-info-key-or-menu-binding "mi-util"))
 
 (defcustom mode-info-advise-describe-commands
-  (and (fboundp 'help-xref-button)
-       (not (fboundp 'define-button-type)))
+  (fboundp 'help-xref-button)
   "*Non-nil means that `mode-info' advises some describing commands,
 such as `describe-function', `describe-variable' and `describe-key'."
   :group 'mode-info
@@ -63,6 +62,27 @@ such as `describe-function', `describe-variable' and `describe-key'."
 such as `Info-goto-emacs-command-node' and `Info-elisp-ref'."
   :group 'mode-info
   :type 'boolean)
+
+(mode-info-static-when (fboundp 'define-button-type)
+  (define-button-type 'mode-info-describe-function
+    :supertype 'help-xref
+    'help-function 'mode-info-describe-function
+    'help-echo (purecopy "mouse-2, RET: go to Info."))
+
+  (define-button-type 'mode-info-describe-variable
+    :supertype 'help-xref
+    'help-function 'mode-info-describe-variable
+    'help-echo (purecopy "mouse-2, RET: go to Info."))
+
+  (define-button-type 'mode-info-emacs-goto-info
+    :supertype 'help-xref
+    'help-function 'mode-info-emacs-goto-info
+    'help-echo (purecopy "mouse-2, RET: go to Info."))
+
+  (define-button-type 'mode-info-emacs-goto-info
+    :supertype 'help-xref
+    'help-function 'mode-info-emacs-goto-info
+    'help-echo (purecopy "mouse-2, RET: go to Info.")))
 
 (put 'mode-info-with-help-buffer 'lisp-indent-function 0)
 (put 'mode-info-with-help-buffer 'edebug-form-spec t)
