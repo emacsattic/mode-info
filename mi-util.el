@@ -102,11 +102,11 @@ reaches end of buffer, return that position."
 ;;; Object System:
 (eval-and-compile
   (defvar mode-info-obarray
-    (let ((obarray (make-vector 31 nil)))
+    (let ((obarray (make-vector 31 0)))
       (intern "mode-info" obarray) ;; mode-info means the base object.
       obarray)
     "Table of mode-info-classes.")
-  (defvar mode-info-method-obarray (make-vector 63 nil)
+  (defvar mode-info-method-obarray (make-vector 63 0)
     "Method table of mode-info-classes."))
 
 (defconst mode-info-prefix "mode-info-")
