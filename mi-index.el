@@ -25,8 +25,8 @@
 
 ;;; Commentary:
 
-;; This file provides `mode-info-make-index', the function to make
-;; indices of mode-info.
+;; This file provides `mode-info-make-all-indices', the command to
+;; make indices of mode-info.
 
 
 ;;; Code:
@@ -42,8 +42,16 @@
   :group 'mode-info
   :type 'coding-system)
 
+(defun mode-info-make-all-indices ()
+  (interactive)
+  (dolist (elem mode-info-class-alist)
+    (let ((name (symbol-name (car elem))))
+      (ignore-errors
+	(require (intern (concat "mi-" name)))
+	(funcall (intern (concat mode-info-prefix name "-make-index")))))))
+
 (defmacro mode-info-target-titles (class)
-  `(get ,class 'target-files))
+  `(get ,class 'titles))
 (defmacro mode-info-entry-regexp (class)
   `(get ,class 'entry-regexp))
 (defmacro mode-info-entry-pos (class)
@@ -91,7 +99,8 @@
 
 (mode-info-defmethod make-index-file ((class mode-info))
   (let ((functions (make-symbol "function-alist"))
-	(variables (make-symbol "variable-alist")))
+	(variables (make-symbol "variable-alist"))
+	(found))
     (set functions nil)
     (set variables nil)
     (dolist (title (mode-info-target-titles class))
@@ -100,6 +109,7 @@
 	      (regexp (format mode-info-node-top-regexp title))
 	      (buffer (current-buffer)))
 	  (dolist (file (mode-info-search-info-files title))
+	    (setq found t)
 	    (with-temp-buffer
 	      (message "Reading %s ..." file)
 	      (let ((coding-system-for-read mode-info-coding-system)
@@ -141,12 +151,14 @@
 		  (mode-info-process-index-node class title nodename
 						functions variables)
 		  (goto-char (point-max)))))))))
-    (dolist (sym (list functions variables))
-      (set sym
-	   (sort (symbol-value sym)
-		 (lambda (a b)
-		   (string< (downcase (car a)) (downcase (car b)))))))
-    (mode-info-write-index-file class functions variables)))
+    (when found
+      (dolist (sym (list functions variables))
+	(set sym
+	     (sort (symbol-value sym)
+		   (lambda (a b)
+		     (string< (downcase (car a)) (downcase (car b)))))))
+      (mode-info-write-index-file class functions variables)
+      (mode-info-load-index class t))))
 
 (mode-info-defgeneric process-node (class title nodename functions variables)
   "Make index for functions and variables described in a node named NODENAME.")
