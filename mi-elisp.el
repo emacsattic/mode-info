@@ -44,7 +44,7 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
-  (require 'help)      ; For define-button-type() in Emacs-21.3.50.
+  (load "help" nil t)  ; For define-button-type() in Emacs-21.3.50.
   (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
@@ -231,21 +231,26 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
     "Get the property of button-type TYPE named PROP (dummy function)."
     (plist-get (get type 'mode-info-button) prop)))
 
-;; The original of this function is `help-insert-xref-button' defined
-;; in help.el of Emacs-21.2.
-(defun mode-info-insert-button (string type data)
-  "Insert STRING and make a hyperlink between `help-mode' buffers."
+(mode-info-static-if (fboundp 'help-insert-xref-button)
+    (mode-info-static-if (fboundp 'define-button-type)
+	(defalias 'mode-info-insert-button 'help-insert-xref-button)
+      (defun mode-info-insert-button (string type &rest args)
+	"Insert STRING and make a hyperlink."
+	(help-insert-xref-button string type args
+				 (mode-info-button-type-get type 'help-echo))))
   (mode-info-static-if (fboundp 'help-xref-button)
-      (let ((pos (point)))
-	(insert string)
-	(goto-char pos)
-	(search-forward string)
-	(mode-info-static-if (and (>= emacs-major-version 21)
-				  (not (fboundp 'define-button-type)))
-	    (help-xref-button 0 type data
-			      (mode-info-button-type-get type 'help-echo))
-	  (help-xref-button 0 type data)))
-    (insert string)))
+      ;; The function is designed for Emacs-20.x, based on
+      ;; `help-insert-xref-button' defined in help.el of Emacs-21.2.
+      (defun mode-info-insert-button (string type &rest args)
+	"Insert STRING and make a hyperlink."
+	(let ((pos (point)))
+	  (insert string)
+	  (goto-char pos)
+	  (search-forward string)
+	  (help-xref-button 0 type args)))
+    (defun mode-info-insert-button (string &rest args)
+      "Insert STRING (dummy function)."
+      (insert string))))
 
 (mode-info-define-button-type 'mode-info-describe-function
   :supertype 'help-xref
@@ -267,7 +272,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	    (insert (if (bolp) "\n" "\n\n")))
 	  (mode-info-insert-button "[info]"
 				   'mode-info-describe-function
-				   (list function class t)))))))
+				   function class t))))))
 
 (mode-info-define-button-type 'mode-info-describe-variable
   :supertype 'help-xref
@@ -289,7 +294,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	    (insert (if (bolp) "\n" "\n\n")))
 	  (mode-info-insert-button "[info]"
 				   'mode-info-describe-variable
-				   (list variable class t)))))))
+				   variable class t))))))
 
 (defun mode-info-elisp-info-ref (function)
   "Look up an Emacs Lisp function in the Elisp manual in the Info system."

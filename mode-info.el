@@ -447,7 +447,9 @@ Return nil if there is no such symbol.")
       (progn
 	(Info-goto-node (nth 1 entry))
 	(goto-char (point-min))
-	(forward-line (nth 2 entry)))
+	(if (= (nth 2 entry) 0)
+	    (search-forward (nth 0 entry) nil t)
+	  (forward-line (nth 2 entry))))
     (setq Info-index-alternatives
 	  (let ((node (cdr entry)) (alt))
 	    (while node

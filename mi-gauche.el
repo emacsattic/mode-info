@@ -56,7 +56,7 @@
   :group 'mode-info-gauche
   :type mode-info-titles-type)
 
-(mode-info-defclass gauche guile)
+(mode-info-defclass gauche scheme)
 
 (defun mode-info-gauche-make-index ()
   "Make index of Info files listed in `mode-info-gauche-titles'."
@@ -68,9 +68,9 @@
 (mode-info-defmethod process-index-node ((class gauche) title nodename
 					 functions variables)
   (cond
-   ((member nodename '("Function and Syntax Index" "手続きと構文索引"
-		       "Module Index" "モジュール索引"
-		       "Class Index" "クラス索引"))
+   ((string-match "\\`\\(\\(Function and Syntax\\|Module\\|Class\\) Index\\|\
+\\(Index +- +\\)?\\(手続きと構文\\|モジュール\\|クラス\\)索引\\)\\'"
+		  nodename)
     (while (re-search-forward
 	    mode-info-index-entry-regexp nil t)
       (let ((key (match-string 1))
@@ -81,7 +81,8 @@
 			    (match-string 1 key)
 			    (substring key (match-end 0)))))
 	(mode-info-process-index-node-1 title functions key node line))))
-   ((member nodename '("Variable Index" "変数索引"))
+   ((string-match "\\`\\(Variable Index\\|\\(Index +- +\\)?変数索引\\)\\'"
+		  nodename)
     (while (re-search-forward mode-info-index-entry-regexp nil t)
       (mode-info-process-index-node-1 title
 				      variables

@@ -108,7 +108,7 @@
 	    (insert (if (bolp) "\n" "\n\n")))
 	  (mode-info-insert-button "[emacs-info]"
 				   'mode-info-emacs-goto-info
-				   (list function)))))))
+				   function))))))
 
 (defun mode-info-emacs-add-variable-button (variable)
   (let ((buffer-read-only)
@@ -123,9 +123,9 @@
 		(end-of-line)
 		(insert " "))
 	    (insert (if (bolp) "\n" "\n\n")))
-	  (mode-info-elisp-button "[emacs-info]"
+	  (mode-info-insert-button "[emacs-info]"
 				  'mode-info-emacs-goto-info
-				  (list variable t)))))))
+				  variable t))))))
 
 (defun mode-info-emacs-make-index ()
   "Make index of Info files listed in `mode-info-emacs-titles'."
