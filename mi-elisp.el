@@ -44,8 +44,9 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
-  (when (locate-library "button")
-    (require 'button)) ; For define-button-type() in Emacs-21.3.50.
+  (condition-case nil
+      (require 'help-mode) ; For `help-xref' button of Emacs-21.3.50.
+    (error nil))
   (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
