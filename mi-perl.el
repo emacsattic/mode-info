@@ -52,7 +52,7 @@
   '("perl-ja.info")
   "*Info titles about Perl."
   :group 'mode-info-perl
-  :type '(repeat string))
+  :type mode-info-titles-type)
 
 (defconst mode-info-perl-entry-regexp "\
 ^[ \t]+-+[ \t]+\\(Function\\|Command\\|Prefix[ \t]+Command\\|コマンド\\|\
