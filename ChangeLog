@@ -1,5 +1,9 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-elisp.el (mode-info-elisp-titles): Change its default.
+
+2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
 	* Release 0.0.5.
 
 	* mode-info.el (mode-info-index-coding-system): Abolished.

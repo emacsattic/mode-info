@@ -58,7 +58,7 @@
 
 (defcustom mode-info-elisp-titles
   (delq nil
-	(list '("elisp-ja" "elisp-jp")
+	(list '("elisp-ja" "elisp-jp" "elisp")
 	      (and (boundp 'MULE) "mule-jp")))
   "*Info titles about emacs-lisp."
   :group 'mode-info-elisp
