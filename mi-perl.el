@@ -49,7 +49,7 @@
   :type 'file)
 
 (defcustom mode-info-perl-titles
-  '("perl-ja.info")
+  '("perl-ja")
   "*Info titles about Perl."
   :group 'mode-info-perl
   :type mode-info-titles-type)
