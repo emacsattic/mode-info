@@ -147,6 +147,13 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (point-min-marker)
 	(with-current-buffer "*Help*" (point-min-marker))))))
 
+(mode-info-defmethod describe-variable-internal ((class elisp) variable
+						 &optional keep-window)
+  (mode-info-method-next)
+  (when (mode-info-variable-described-p class variable)
+    (message "%s's value is %s"
+	     variable (prin1-to-string (symbol-value variable)))))
+
 (defun mode-info-elisp-add-function-button (function)
   (mode-info-static-if (fboundp 'help-insert-xref-button)
       (let ((buffer-read-only)
@@ -155,12 +162,15 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (insert (if (bolp) "\n[" "\n\n["))
-	      (help-insert-xref-button "info"
+	      (if (search-backward "[back]" (line-beginning-position) t)
+		  (progn
+		    (end-of-line)
+		    (insert " "))
+		(insert (if (bolp) "\n" "\n\n")))
+	      (help-insert-xref-button "[info]"
 				       'mode-info-describe-function
 				       (list function class t)
-				       "mouse-2, Ret: go to Info.")
-	      (insert "]")))))
+				       "mouse-2, Ret: go to Info.")))))
     (ignore)))
 
 (defun mode-info-elisp-add-variable-button (variable)
@@ -171,12 +181,15 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (insert (if (bolp) "\n[" "\n\n["))
-	      (help-insert-xref-button "info"
+	      (if (search-backward "[back]" (line-beginning-position) t)
+		  (progn
+		    (end-of-line)
+		    (insert " "))
+		(insert (if (bolp) "\n" "\n\n")))
+	      (help-insert-xref-button "[info]"
 				       'mode-info-describe-variable
 				       (list variable class t)
-				       "mouse-2, Ret: go to Info.")
-	      (insert "]")))))
+				       "mouse-2, Ret: go to Info.")))))
     (ignore)))
 
 (defun mode-info-elisp-make-index ()

@@ -1,5 +1,18 @@
 2002-07-18  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (describe-function-internal): New method.
+	(mode-info-describe-function): Call it.
+	(describe-variable-internal): New method.
+	(mode-info-describe-variable): Call it.
+
+	* mi-ruby.el (mode-info-ruby-make-index): Enlarge
+	`max-specpdl-size' to avoid error.
+
+	* mi-elisp.el (describe-variable-internal): New method to display
+	VARIABLES's value.
+	(mode-info-elisp-add-function-button): Small modified.
+	(mode-info-elisp-add-variable-button): Ditto.
+
 	* mode-info.el (mode-info-describe-function): Accept the 3rd
 	optional argument, keep-window.
 	(mode-info-describe-variable): Ditto.

@@ -200,6 +200,19 @@ If that doesn't give a function, return nil.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
+(mode-info-defgeneric describe-function-internal (class function
+							&optional keep-window)
+  "Display the full documentation of FUNCTION (a symbol).")
+
+(mode-info-defmethod describe-function-internal ((class mode-info) function
+						 &optional keep-window)
+  (mode-info-show-document
+    (save-excursion
+      (save-window-excursion
+	(or (mode-info-function-document class function)
+	    (error "Undocumented function: %s" function))))
+    keep-window))
+
 (defun mode-info-describe-function (function &optional class-name keep-window)
   "Display the full documentation of FUNCTION (a symbol)."
   (interactive
@@ -207,13 +220,10 @@ If that doesn't give a function, return nil.")
 		   (mode-info-read-class-name)
 		 (mode-info-default-class-name))))
      (list (mode-info-read-function (mode-info-new name) nil nil nil t)
-	   name)))
-  (mode-info-show-document
-    (save-excursion
-     (save-window-excursion
-       (or (mode-info-function-document (mode-info-new class-name) function)
-	   (error "Undocumented function: %s" function))))
-    keep-window))
+	   name
+	   (memq major-mode '(Info-mode help-mode)))))
+  (mode-info-describe-function-internal (mode-info-new class-name)
+					function keep-window))
 
 (mode-info-defgeneric variable-at-point (mode)
   "Return the bound variable symbol found around point.
@@ -256,6 +266,19 @@ Return nil if there is no such symbol.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
+(mode-info-defgeneric describe-variable-internal (class variable
+							&optional keep-window)
+  "Display the full documentation of VARIABLE (a symbol).")
+
+(mode-info-defmethod describe-variable-internal ((class mode-info) variable
+						 &optional keep-window)
+  (mode-info-show-document
+    (save-excursion
+      (save-window-excursion
+	(or (mode-info-variable-document class variable)
+	    (error "Undocumented variable: %s" variable))))
+    keep-window))
+
 (defun mode-info-describe-variable (variable &optional class-name keep-window)
   "Display the full documentation of VARIABLE (a symbol)."
   (interactive
@@ -263,13 +286,10 @@ Return nil if there is no such symbol.")
 		   (mode-info-read-class-name)
 		 (mode-info-default-class-name))))
      (list (mode-info-read-variable (mode-info-new name) nil nil nil t)
-	   name)))
-  (mode-info-show-document
-   (save-excursion
-     (save-window-excursion
-       (or (mode-info-variable-document (mode-info-new class-name) variable)
-	   (error "Undocumented variable: %s" variable))))
-   keep-window))
+	   name
+	   (memq major-mode '(Info-mode help-mode)))))
+  (mode-info-describe-variable-internal (mode-info-new class-name)
+					variable keep-window))
 
 (defun mode-info-show-document (marker &optional keep-window)
   "Display the document pointed by MARKER."

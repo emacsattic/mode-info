@@ -91,7 +91,8 @@
 (defun mode-info-ruby-make-index ()
   "Make index of Info files listed in `mode-info-ruby-titles'."
   (interactive)
-  (let ((mode-info-index-entry-suffix-regexp mode-info-ruby-suffix-regexp))
+  (let ((mode-info-index-entry-suffix-regexp mode-info-ruby-suffix-regexp)
+	(max-specpdl-size (* 10 max-specpdl-size)))
     (mode-info-make-index 'ruby
 			  mode-info-ruby-titles
 			  mode-info-ruby-entry-regexp
