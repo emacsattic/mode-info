@@ -2,6 +2,9 @@
 
 	* Release 0.1.
 
+	* mi-fontify.el (mode-info-fontify-node): Make info buffer as
+	unmodified at the end of fontify process.
+
 	* mi-util.el (line-beginning-position): Defined to avoid
 	byte-compile warning in XEmacs.
 

@@ -100,7 +100,8 @@ System[ \t]+V\\)[ \t]+\\)?[Ff]unction\\|\\(\\([Gg]lob\\|[Ll]oc\\)al[ \t]+\\)?\
 	  (font-lock-keywords mode-info-fontify-keywords))
       (font-lock-default-unfontify-region (point-min) (point-max))
       ad-do-it
-      (font-lock-fontify-keywords-region (point-min) (point-max) nil))))
+      (font-lock-fontify-keywords-region (point-min) (point-max) nil)
+      (set-buffer-modified-p nil))))
 
 (provide 'mi-fontify)
 
