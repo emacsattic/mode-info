@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.0.5.
+
 	* mode-info.el (mode-info-index-coding-system): Abolished.
 
 	* mi-ruby.el (mode-info-ruby-titles): Change its default.

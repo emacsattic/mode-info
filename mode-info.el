@@ -44,7 +44,7 @@
   (autoload 'mode-info-make-index "mi-index")
   (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
-(defconst mode-info-version "0.0.4"
+(defconst mode-info-version "0.0.5"
   "Version number of `mode-info'.")
 
 (defgroup mode-info nil
