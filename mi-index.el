@@ -65,7 +65,19 @@
 (defun mode-info-make-index (class titles entry-regexp entry-pos
 				   &optional variable-regexp)
   (setq class (mode-info-find-class class))
-  (setf (mode-info-target-titles class) titles)
+  (setf (mode-info-target-titles class)
+	(delq nil
+	      (mapcar (lambda (x)
+			(cond
+			 ((stringp x)
+			  (and (mode-info-search-info-files x) x))
+			 ((listp x)
+			  (car (mapcar (lambda (y)
+					 (and (stringp y)
+					      (mode-info-search-info-files y)
+					      y))
+				       x)))))
+		      titles)))
   (setf (mode-info-entry-regexp class) entry-regexp)
   (setf (mode-info-entry-pos class) entry-pos)
   (setf (mode-info-variable-regexp class)
@@ -87,13 +99,15 @@
     (save-excursion
       (info)))
   (catch 'found-info-files
-    (dolist (dir (append Info-directory-list Info-additional-directory-list))
-      (when (or (file-readable-p (expand-file-name title dir))
-		(file-readable-p (expand-file-name (concat title ".gz") dir)))
-	(throw 'found-info-files
-	       (directory-files dir t
-				(format "\\`%s\\(-[0-9]+\\)?\\(\\.gz\\)?\\'"
-					(regexp-quote title))))))))
+    (let ((regexp (format "\\`%s\\(\\.info\\)?\\(\\.gz\\)?\\'"
+			  (regexp-quote title))))
+      (dolist (dir (append Info-directory-list Info-additional-directory-list))
+	(when (directory-files dir nil regexp t)
+	  (throw 'found-info-files
+		 (directory-files
+		  dir t
+		  (format "\\`%s\\(\\.info\\)?\\(-[0-9]+\\)?\\(\\.gz\\)?\\'"
+			  (regexp-quote title)))))))))
 
 (defconst mode-info-node-top-regexp
   "\^_\nFile: %s, +Node: +\\([^,\n\t]+\\)[,\n\t]"

@@ -1,5 +1,9 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-index.el (mode-info-make-index): Follow the type change of
+	`mode-info-*-titles'.
+	(mode-info-search-info-files): Search files have `.info' suffix.
+
 	* mi-emacs.el: New file.
 
 	* mi-elisp.el (toplevel): Add autoload for
