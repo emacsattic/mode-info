@@ -43,8 +43,7 @@
   (require 'mi-index))
 
 (eval-and-compile
-  (autoload 'find-function-read "find-func")
-  (autoload 'find-function-noselect "find-func")
+  (autoload 'find-function-search-for-symbol "find-func")
   (autoload 'find-variable-noselect "find-func"))
 
 (defgroup mode-info-elisp nil
@@ -58,14 +57,12 @@
   :type 'file)
 
 (defcustom mode-info-elisp-titles
-  (let ((x (if (file-directory-p "/var/lib/dpkg")
-	       "elisp-ja" "elisp-jp")))
-    (if (boundp 'MULE)
-	(list x "mule-jp")
-      (list x)))
+  (delq nil
+	(list '("elisp-ja" "elisp-jp")
+	      (and (boundp 'MULE) "mule-jp")))
   "*Info titles about emacs-lisp."
   :group 'mode-info-elisp
-  :type '(repeat string))
+  :type mode-info-titles-type)
 
 (defconst mode-info-elisp-entry-regexp "\
 ^[ \t]+-+[ \t]+\\(\\(Prefix[ \t]+\\)?Command\\|\\(プレフィックス\\)?コマンド\\|\
@@ -105,12 +102,17 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (mode-info-load-index class)
   (and (assq function (mode-info-function-alist class)) t))
 
-(defun mode-info-elisp-function-document-1 (function)
+(defsubst mode-info-elisp-function-document-1 (function)
   (goto-char (point-max))
   (forward-line -1)
   (or (when (search-forward "not documented" nil t)
 	(let ((x (ignore-errors
-		   (find-function-noselect function))))
+		   (unless (subrp (symbol-function function))
+		     ;; Don't use find-function-noselect because it
+		     ;; follows aliases (which fails for built-in
+		     ;; functions).
+		     (find-function-search-for-symbol
+		      function nil (symbol-file function))))))
 	  (when x
 	    (message "%s is not documented" function)
 	    x)))
@@ -154,17 +156,6 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (mode-info-load-index class)
   (and (assq variable (mode-info-variable-alist class)) t))
 
-(defsubst mode-info-elisp-variable-document-1 (variable)
-  (goto-char (point-max))
-  (forward-line -2)
-  (or (when (search-forward "not documented as a variable." nil t)
-	(let ((x (ignore-errors
-		   (find-variable-noselect variable))))
-	  (when x
-	    (message "%s is not documented as a variable" variable)
-	    x)))
-      (cons (current-buffer) (point-min))))
-
 (mode-info-defmethod variable-document ((class elisp) variable)
   (mode-info-load-index class)
   (let ((entry (assq variable (mode-info-variable-alist class))))
@@ -172,9 +163,9 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	(mode-info-goto-info-entry class entry)
       (describe-variable variable)
       (mode-info-static-if (featurep 'xemacs)
-	  (mode-info-elisp-variable-document-1 variable)
+	  (cons (current-buffer) (point-min))
 	(with-current-buffer "*Help*"
-	  (mode-info-elisp-variable-document-1 variable))))))
+	  (cons (current-buffer) (point-min)))))))
 
 (mode-info-defmethod describe-variable-internal ((class elisp) variable
 						 &optional keep-window)
@@ -184,31 +175,38 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	     variable (prin1-to-string (symbol-value variable)))))
 
 (mode-info-defmethod read-tag ((class elisp))
-  (if (mode-info-variable-at-point class)
-      (cons (car (find-function-read t)) nil)
-    (cons (car (find-function-read)) t)))
+  (let* ((default (or (mode-info-variable-at-point class)
+		      (mode-info-function-at-point class)))
+	 (x (completing-read (if default
+				 (format "[%s] Find tag (default %s): "
+					 (mode-info-class-name class)
+					 default)
+			       (format "[%s] Find tag: "
+				       (mode-info-class-name class)))
+			     obarray
+			     (lambda (s) (or (boundp s) (fboundp s)))
+			     t)))
+    (if (string= x "") default (intern x))))
 
 (mode-info-defmethod find-tag-noselect ((class elisp) tag)
-  (when (consp tag)
-    (if (cdr tag)
-	(condition-case err
-	    (find-function-noselect (car tag))
-	  (error
-	   (let ((msg (error-message-string err)))
-	     (if (string= msg
-			  (format "%s is a primitive function" (car tag)))
-		 (prog1 (mode-info-function-document class (car tag))
-		   (message msg))
-	       (signal (car err) (cdr err))))))
-      (condition-case err
-	  (find-variable-noselect (car tag))
-	(error
-	 (let ((msg (error-message-string err)))
-	   (if (string= msg
-			(format "Don't know where `%s' is defined" (car tag)))
-	       (prog1 (mode-info-variable-document class (car tag))
-		 (message msg))
-	     (signal (car err) (cdr err)))))))))
+  (cond
+   ((fboundp tag)
+    (if (subrp (symbol-function tag))
+	(prog1 (mode-info-function-document class tag)
+	  (message "%s is a primitive function" tag))
+      ;; Don't use find-function-noselect because it follows aliases
+      ;; (which fails for built-in functions).
+      (find-function-search-for-symbol tag nil (symbol-file tag))))
+   ((boundp tag)
+    (condition-case err
+	(find-variable-noselect tag)
+      (error
+       (let ((msg (error-message-string err)))
+	 (if (string= msg
+		      (format "Don't know where `%s' is defined" tag))
+	     (prog1 (mode-info-variable-document class tag)
+	       (message msg))
+	   (signal (car err) (cdr err)))))))))
 
 (defun mode-info-elisp-add-function-button (function)
   (mode-info-static-if (fboundp 'help-insert-xref-button)
@@ -218,7 +216,8 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (if (search-backward "[back]" (line-beginning-position) t)
+	      (if (re-search-backward "\\[[-a-z]+\\]"
+				      (line-beginning-position) t)
 		  (progn
 		    (end-of-line)
 		    (insert " "))
@@ -237,7 +236,8 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (if (search-backward "[back]" (line-beginning-position) t)
+	      (if (re-search-backward "\\[[-a-z]+\\]"
+				      (line-beginning-position) t)
 		  (progn
 		    (end-of-line)
 		    (insert " "))

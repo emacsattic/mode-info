@@ -1,5 +1,19 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-elisp.el (toplevel): Add autoload for
+	`find-function-search-for-symbol'.  Remove useless autoloads.
+	(mode-info-elisp-titles): Change default value.  Refer
+	`mode-info-title-types' as its type.
+	(mode-info-elisp-function-document-1): Use
+	`find-function-search-for-symbol' instead
+	of`find-function-noselect'.
+	(mode-info-elisp-variable-document-1): Removed.
+	(variable-document): Not call the above function.
+	(read-tag, find-tag-noselect): Reimplemented.
+	(mode-info-elisp-add-function-button): Relax the regular
+	expression to detect other buttons.
+	(mode-info-elisp-add-variable-button): Ditto.
+
 	* mi-config.el (toplevel): Add autoloads.
 	(mode-info-with-help-buffer): New macro.
 	(mode-info-elisp-add-function-button): Use the above macro.
