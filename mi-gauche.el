@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'mode-info)
+(require 'mi-scheme)
 (eval-when-compile
   (require 'cl)
   (require 'mi-index))
@@ -51,31 +52,7 @@
   :group 'mode-info-gauche
   :type mode-info-titles-type)
 
-(mode-info-defclass gauche)
-
-(defun mode-info-gauche-word-at-point (alist)
-  (ignore-errors
-    (let ((word
-	   (save-excursion
-	     (cond
-	      ((looking-at "\\s(")
-	       (skip-chars-forward "\\s("))
-	      ((looking-at "\\s)")
-	       (backward-sexp)
-	       (skip-chars-forward "\\s("))
-	      (t
-	       (backward-sexp)))
-	     (buffer-substring-no-properties
-	      (point) (progn (forward-sexp) (point))))))
-      (if (assoc word alist) word nil))))
-
-(mode-info-defmethod function-at-point ((class gauche))
-  (mode-info-load-index class)
-  (mode-info-gauche-word-at-point (mode-info-function-alist class)))
-
-(mode-info-defmethod variable-at-point ((class gauche))
-  (mode-info-load-index class)
-  (mode-info-gauche-word-at-point (mode-info-variable-alist class)))
+(mode-info-defclass gauche guile)
 
 (defun mode-info-gauche-make-index ()
   "Make index of Info files listed in `mode-info-gauche-titles'."
