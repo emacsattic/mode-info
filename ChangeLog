@@ -1,5 +1,9 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-class-alist): Add `emacs'.
+	(mode-info-show-document): Return the specified position if
+	success.
+
 	* mi-util.el (mode-info-titles-type): New constant.
 	(mode-info-method-next): New function.
 
