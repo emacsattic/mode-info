@@ -50,6 +50,7 @@ describe-function / describe-variable を拡張するプログラムです．
        (define-key global-map "\C-hF" 'describe-function)
        (define-key global-map "\C-hv" 'mode-info-describe-variable)
        (define-key global-map "\C-hV" 'describe-variable)
+       (define-key global-map "\M-." 'mode-info-find-tag)
 
    カラフルな Info が好みの人は，以下の設定も追加してください．
 
