@@ -1,3 +1,8 @@
+2002-07-30  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-fontify.el (mode-info-fontify-keywords): Relaxed.
+	(retry-japanese-node-name): New advice.
+
 2002-07-25  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mode-info.el (mode-info-version): Release 0.1.1.

@@ -72,36 +72,52 @@
   (eval-when-compile
     (if (fboundp 'font-lock-compile-keywords)
 	(font-lock-compile-keywords
-	 '(("^\\(\\* \\)\\([^:]+:+\\)"
+	 `(("^\\(\\* \\)\\([^:]+:+\\)"
 	    (1 'mode-info-fontify-entry-face t)
 	    (2 'mode-info-fontify-entry-body-face t))
 	   ("^\\* Menu:$" 0 'mode-info-fontify-entry-face t)
 	   ("\\(\\*[Nn]ote\\b\\)\\([^:]+:+\\)"
 	    (1 'mode-info-fontify-xref-face t)
 	    (2 'mode-info-fontify-xref-body-face t))
-	   ;; この正規表現は以下の単語に一致する
-	   ;;     Prefix Command, Command, Data Type, Deprecated Function,
-	   ;;     Obsolete Function, POSIX.1 Function, BSD Function,
-	   ;;     System V Function, Function, Global Variable, Local Variable,
-	   ;;     Variable, Macro, Method, Special Form, User Option,
-	   ;;     Option, プレフィックスコマンド, コマンド.
-	   ("^[ ^\t]-+[ \t]+\\(\\([Pp]refix[ \t]+\\)?[Cc]ommand\\|\
-[Dd]ata[ \t]+[Tt]ype\\|\\(\\(Deprecated\\|Obsolete\\|POSIX\\.1\\|BSD\\|\
-System[ \t]+V\\)[ \t]+\\)?[Ff]unction\\|\\(\\([Gg]lob\\|[Ll]oc\\)al[ \t]+\\)?\
-[Vv]ariable\\|[Mm]\\(acro\\|ethod\\)\\|[Ss]pecial[ \t]+[Ff]orm\\|\
-\\([Uu]ser[ \t]+\\)?[Oo]ption\\|\\(プレフィックス\\)?コマンド\\):.*$"
+	   ("^ --? [A-Z]\\([A-Z.0-9]*\\|[a-z]*\\)\\( [A-Za-z][a-z]*\\)*\\( `[A-Za-z]*'\\)?:.*$"
+	    0 'mode-info-fontify-keyword-face t)
+	   (,(concat
+	      "^[ \t]-+[ \t]+"
+	      (regexp-opt '("プレフィックスコマンド" "コマンド") t)
+	      ":.*$")
 	    0 'mode-info-fontify-keyword-face t)))))
   "Rules for highlighting Info pages.")
 
 (let (current-load-list)
   (defadvice Info-fontify-node
     (around mode-info-fontify-node activate compile)
+    "Advised by `mode-info'.
+Highlight Info pages based on the value of `mode-info-fontify-keywords'."
     (let ((buffer-read-only)
 	  (font-lock-keywords mode-info-fontify-keywords))
       (font-lock-default-unfontify-region (point-min) (point-max))
       ad-do-it
       (font-lock-fontify-keywords-region (point-min) (point-max) nil)
       (set-buffer-modified-p nil))))
+
+(let (current-load-list)
+  (defadvice Info-goto-node
+    (around retry-japanese-node-name activate compile)
+    "Advised by `mode-info'.
+When NODENAME includes spaces surrounded by Japanese characters and
+such node is not found, retry for nodename removed spaces."
+    (condition-case err
+	ad-do-it
+      (error
+       (or (and (string-match
+		 "\\`No such anchor in tag table or node in tag table or file:"
+		 (error-message-string err))
+		(string-match "\\cj\\([ \t\r\f\n]+\\)\\cj" (ad-get-arg 0))
+		(Info-goto-node
+		 (concat (substring (ad-get-arg 0) 0 (match-beginning 1))
+			 (substring (ad-get-arg 0) (match-end 1)))
+		 (ad-get-arg 1)))
+	   (signal (car err) (cdr err)))))))
 
 (provide 'mi-fontify)
 
