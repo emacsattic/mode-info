@@ -43,7 +43,8 @@
 (require 'mi-elisp)
 (eval-when-compile
   (require 'cl)
-  (require 'mi-config) ; For mode-info-with-help-buffer
+  (require 'help)      ; For define-button-type() in Emacs-21.3.50.
+  (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
 (defgroup mode-info-emacs nil
@@ -87,6 +88,12 @@
 	   (when entry
 	     (mode-info-goto-info-entry class entry)))))
      t)))
+
+(mode-info-static-when (fboundp 'define-button-type)
+  (define-button-type 'mode-info-emacs-goto-info
+    :supertype 'help-xref
+    'help-function 'mode-info-emacs-goto-info
+    'help-echo "mouse-2, RET: go to Info."))
 
 (defun mode-info-emacs-add-function-button (function)
   (let ((buffer-read-only)

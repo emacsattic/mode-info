@@ -63,27 +63,6 @@ such as `Info-goto-emacs-command-node' and `Info-elisp-ref'."
   :group 'mode-info
   :type 'boolean)
 
-(mode-info-static-when (fboundp 'define-button-type)
-  (define-button-type 'mode-info-describe-function
-    :supertype 'help-xref
-    'help-function 'mode-info-describe-function
-    'help-echo (purecopy "mouse-2, RET: go to Info."))
-
-  (define-button-type 'mode-info-describe-variable
-    :supertype 'help-xref
-    'help-function 'mode-info-describe-variable
-    'help-echo (purecopy "mouse-2, RET: go to Info."))
-
-  (define-button-type 'mode-info-emacs-goto-info
-    :supertype 'help-xref
-    'help-function 'mode-info-emacs-goto-info
-    'help-echo (purecopy "mouse-2, RET: go to Info."))
-
-  (define-button-type 'mode-info-emacs-goto-info
-    :supertype 'help-xref
-    'help-function 'mode-info-emacs-goto-info
-    'help-echo (purecopy "mouse-2, RET: go to Info.")))
-
 (put 'mode-info-with-help-buffer 'lisp-indent-function 0)
 (put 'mode-info-with-help-buffer 'edebug-form-spec t)
 (defmacro mode-info-with-help-buffer (&rest body)

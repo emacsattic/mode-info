@@ -44,7 +44,8 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
-  (require 'mi-config) ; For mode-info-with-help-buffer
+  (require 'help)      ; For define-button-type() in Emacs-21.3.50.
+  (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
 (eval-and-compile
@@ -221,18 +222,21 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 ;; in help.el of Emacs-21.2.
 (defun mode-info-elisp-insert-button (string function data &optional help-echo)
   "Insert STRING and make a hyperlink between `help-mode' buffers."
-  (mode-info-static-if (fboundp 'insert-text-button)
-      (unless (button-at (point))
-	(insert-text-button string 'type function 'help-args data))
-    (mode-info-static-if (fboundp 'help-xref-button)
-	(let ((pos (point)))
-	  (insert string)
-	  (goto-char pos)
-	  (search-forward string)
-	  (mode-info-static-if (>= emacs-major-version 21)
-	      (help-xref-button 0 function data help-echo)
-	    (help-xref-button 0 function data)))
-      (insert string))))
+  (mode-info-static-if (fboundp 'help-xref-button)
+      (let ((pos (point)))
+	(insert string)
+	(goto-char pos)
+	(search-forward string)
+	(mode-info-static-if (>= emacs-major-version 21)
+	    (help-xref-button 0 function data help-echo)
+	  (help-xref-button 0 function data)))
+    (insert string)))
+
+(mode-info-static-when (fboundp 'define-button-type)
+  (define-button-type 'mode-info-describe-function
+    :supertype 'help-xref
+    'help-function 'mode-info-describe-function
+    'help-echo "mouse-2, RET: go to Info."))
 
 (defun mode-info-elisp-add-function-button (function)
   (let ((buffer-read-only)
@@ -251,6 +255,12 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 					 'mode-info-describe-function
 					 (list function class t)
 					 "mouse-2, Ret: go to Info."))))))
+
+(mode-info-static-when (fboundp 'define-button-type)
+  (define-button-type 'mode-info-describe-variable
+    :supertype 'help-xref
+    'help-function 'mode-info-describe-variable
+    'help-echo "mouse-2, RET: go to Info."))
 
 (defun mode-info-elisp-add-variable-button (variable)
   (let ((buffer-read-only)

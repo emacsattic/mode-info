@@ -1,3 +1,15 @@
+2004-11-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-config.el (toplevel): Move button definitions to mi-elisp.el
+	and mi-emacs.el.
+
+	* mi-elisp.el (toplevel): Require help.el.  Import button
+	definitions from mi-config.el.
+	(mode-info-elisp-insert-button): Cancel the last change.
+
+	* mi-emacs.el (toplevel): Require help.el.  Import a button
+	definition from mi-config.el.
+
 2004-11-14  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
 
 	* mi-util.el (mode-info-static-when): New macro.
