@@ -70,7 +70,12 @@
   (setf (mode-info-entry-pos class) entry-pos)
   (setf (mode-info-variable-regexp class)
 	(or variable-regexp mode-info-variable-regexp))
-  (mode-info-make-index-file class))
+  (unless (and noninteractive
+	       (file-exists-p (mode-info-index-file-name class))
+	       (file-newer-than-file-p
+		(mode-info-index-file-name class)
+		(locate-library (concat "mi-" (mode-info-class-name class)))))
+    (mode-info-make-index-file class)))
 
 (eval-when-compile
   (defvar Info-directory-list)
