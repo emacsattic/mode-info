@@ -9,7 +9,7 @@
 
 	* mi-util.el (mode-info-defgeneric): Changed error signal.
 
-	* mi-libc.el (Module): Add autoload for functions defined in
+	* mi-libc.el (toplevel): Add autoload for functions defined in
 	etags.el.
 	(read-tag, find-tag-noselect): New method.
 
