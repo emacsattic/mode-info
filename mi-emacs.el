@@ -48,7 +48,7 @@
   :type 'file)
 
 (defcustom mode-info-emacs-titles
-  '(("emacs-ja" "emacs-jp"))
+  '(("emacs-ja" "emacs-jp" "emacs"))
   "*Info titles about emacs."
   :group 'mode-info-emacs
   :type mode-info-titles-type)

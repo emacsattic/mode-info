@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-emacs.el (mode-info-emacs-titles): Change its default.
+
 	* mi-elisp.el (mode-info-elisp-titles): Change its default.
 
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
