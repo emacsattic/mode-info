@@ -1,5 +1,9 @@
 2004-11-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-version): Release 0.8.1.
+	(mode-info-goto-info-entry-1): When a line number is equal to
+	zero, search the concerend name instead of using line numbers.
+
 	* mi-elisp.el (mode-info-insert-button): Simplified.
 	(mode-info-elisp-add-function-button): Follow the change of
 	`mode-info-insert-button'.
@@ -11,10 +15,6 @@
 	* mi-gauche.el (toplevel): Use `scheme' as its parent class,
 	instead of `guile'.
 	(process-index-node): Follow the upsteram changes.
-
-	* mode-info.el (mode-info-goto-info-entry-1): When a line number
-	is equal to zero, search the concerend name instead of using line
-	numbers.
 
 2004-11-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
