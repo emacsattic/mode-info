@@ -1,0 +1,95 @@
+;;; -*- Emacs-Lisp -*-
+
+;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+
+;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Keywords: info
+
+;; This file is a part of mode-info.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, you can either send email to this
+;; program's maintainer or write to: The Free Software Foundation,
+;; Inc.; 59 Temple Place, Suite 330; Boston, MA 02111-1307, USA.
+
+
+;;; Commentary:
+
+;; This file provides the stuffs to build mode-info.
+
+
+;;; Code:
+
+(and (boundp 'emacs-major-version)
+     (>= emacs-major-version 20)
+     (fboundp 'set-language-environment)
+     (set-language-environment "Japanese"))
+
+(let ((addpath "@ADDITIONAL_LOAD_PATH@"))
+  (or (string= addpath "NONE")
+      (string= addpath (concat "@" "ADDITIONAL_LOAD_PATH" "@"))
+      (let (dir buf)
+	(while (string-match "\\([^\0-\37:]+\\)[\0-\37:]*" addpath)
+	  (setq dir (file-name-as-directory
+		     (expand-file-name (substring addpath
+						  (match-beginning 1)
+						  (match-end 1))))
+		addpath (substring addpath (match-end 0)))
+	  (if (file-directory-p dir)
+	      (setq buf (cons dir buf))))
+	(if buf
+	    (setq load-path (nconc (nreverse buf) load-path))))))
+
+(setq load-path (cons default-directory load-path))
+
+(defun elisp-comp-version ()
+  (require 'mode-info)
+  (princ mode-info-version t))
+
+(defun elisp-comp-target ()
+  (let ((sources (directory-files default-directory nil "\\`mi-.*\\.el\\'"))
+	(head '("mi-util.el" "mode-info.el" "mi-index.el"))
+	(last '("mi-fontify.el" "mi-config.el"))
+	(x))
+    (setq x (append head last))
+    (while x
+      (setq sources (delete (car x) sources)
+	    x (cdr x)))
+    (setq x (nconc head sources last))
+    (while x
+      (princ (concat (car x) "c\n") t)
+      (setq x (cdr x)))))
+
+(defvar Info-additional-directory-list nil)
+
+(defun elisp-comp-index ()
+  (let ((addpath "@ADDITIONAL_INFO_PATH@"))
+    (or (string= addpath "NONE")
+	(string= addpath (concat "@" "ADDITIONAL_INFO_PATH" "@"))
+	(let (dir buf)
+	  (while (string-match "\\([^\0-\37:]+\\)[\0-\37:]*" addpath)
+	    (setq dir (file-name-as-directory
+		       (expand-file-name (substring addpath
+						    (match-beginning 1)
+						    (match-end 1))))
+		  addpath (substring addpath (match-end 0)))
+	    (if (file-directory-p dir)
+	      (setq buf (cons dir buf))))
+	  (if buf
+	      (setq Info-additional-directory-list
+		    (nconc (nreverse buf)
+			   Info-additional-directory-list))))))
+  (require 'mi-index)
+  (mode-info-make-all-indices))
+
+;;; elisp-comp.in ends here
