@@ -64,11 +64,12 @@ tarball: $(DOCS) $(DISTS)
 	rm -rf $(DISTDIR)
 
 clean:
-	-rm -rf *~ *.elc $(PACKAGE)-*
+	-rm -rf *~ *.elc $(PACKAGE)-*.tar.gz
 
 distclean: clean
-	-rm -f *.idx config.log config.status config.cache Makefile elisp-comp ;\
-	rm -fr autom4te*.cache
+	-rm -f *.idx
+	-rm -f config.log config.status config.cache Makefile elisp-comp
+	-rm -fr autom4te*.cache
 
 ## Rule for the developers to check a portability for each module.
 .SUFFIXES: .elc .el
