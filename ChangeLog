@@ -1,5 +1,7 @@
 2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.1.
+
 	* mi-util.el (line-beginning-position): Defined to avoid
 	byte-compile warning in XEmacs.
 
@@ -32,8 +34,6 @@
 	(mode-info-elisp-info-ref): New advise.
 
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
-
-	* Release 0.0.6.
 
 	* mi-util.el (mode-info-static-if): Add edebug form spec.
 
