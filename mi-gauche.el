@@ -1,6 +1,6 @@
 ;;; mi-gauche.el --- Mode-info backend for gauche -*- coding: iso-2022-7bit -*-
 
-;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2002,2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: gauche info
@@ -64,10 +64,6 @@
   (let ((mode-info-index-node-regexp "\\(索引\\|Index\\)\\'")
 	(mode-info-index-entry-suffix-regexp "\\([ \t]+of[ \t]+<[^>]+>\\)\\'"))
     (mode-info-make-index 'gauche mode-info-gauche-titles nil nil)))
-
-(mode-info-defmethod process-node ((class gauche) title nodename
-				   functions variables)
-  (ignore))
 
 (mode-info-defmethod process-index-node ((class gauche) title nodename
 					 functions variables)

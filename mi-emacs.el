@@ -1,6 +1,6 @@
 ;;; mi-emacs.el --- Mode-info backend for emacs
 
-;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2002,2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: emacs info
@@ -120,10 +120,6 @@
   "Make index of Info files listed in `mode-info-emacs-titles'."
   (interactive)
   (mode-info-make-index 'emacs mode-info-emacs-titles nil nil))
-
-(mode-info-defmethod process-node ((class emacs) title nodename
-				   functions variables)
-  (ignore))
 
 (mode-info-defmethod process-index-node ((class emacs) title nodename
 					 functions variables)
