@@ -111,12 +111,13 @@
     (let ((regexp (format "\\`%s\\(\\.info\\)?\\(\\.gz\\)?\\'"
 			  (regexp-quote title))))
       (dolist (dir (append Info-directory-list Info-additional-directory-list))
-	(when (directory-files dir nil regexp t)
-	  (throw 'found-info-files
-		 (directory-files
-		  dir t
-		  (format "\\`%s\\(\\.info\\)?\\(-[0-9]+\\)?\\(\\.gz\\)?\\'"
-			  (regexp-quote title)))))))))
+	(and (file-directory-p dir)
+	     (directory-files dir nil regexp t)
+	     (throw 'found-info-files
+		    (directory-files
+		     dir t
+		     (format "\\`%s\\(\\.info\\)?\\(-[0-9]+\\)?\\(\\.gz\\)?\\'"
+			     (regexp-quote title)))))))))
 
 (defconst mode-info-node-top-regexp
   "\^_\nFile: [^,]*, +Node: +\\([^,\n\t]+\\)[,\n\t]"
@@ -295,17 +296,14 @@
 	    "))\n")))
 
 (mode-info-static-if (fboundp 'regexp-opt)
-    (mode-info-static-if (and (not (featurep 'xemacs))
-			      (>= emacs-major-version 21))
-	(defun mode-info-regexp-opt (strings &optional paren)
-	  "Return a regexp to match a string in STRINGS."
-	  (with-temp-buffer
-	    (insert (regexp-opt strings paren))
-	    (goto-char (point-min))
-	    (while (search-forward "\\(?:" nil t)
-	      (delete-char -2))
-	    (buffer-string)))
-      (defalias 'mode-info-regexp-opt 'regexp-opt))
+    (defun mode-info-regexp-opt (strings &optional paren)
+      "Return a regexp to match a string in STRINGS."
+      (with-temp-buffer
+	(insert (regexp-opt strings paren))
+	(goto-char (point-min))
+	(while (search-forward "\\(?:" nil t)
+	  (delete-char -2))
+	(buffer-string)))
   (defun mode-info-regexp-opt (strings &optional paren)
     "Return a regexp to match a string in STRINGS."
     (let ((open (if paren "\\(" ""))
