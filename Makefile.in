@@ -18,6 +18,7 @@ DOCS    = COPYING ChangeLog README README.ja
 DISTS   = Makefile.in aclocal.m4 configure configure.in install-sh mkinstalldirs elisp-comp.in
 
 default: Makefile elisp-comp
+	env test ! -f mi-util.elc -o mi-util.elc -nt mi-util.el || $(MAKE) clean
 	$(MAKE) `$(EMACS) $(FLAGS) -f elisp-comp-target 2>/dev/null`
 
 install: default
