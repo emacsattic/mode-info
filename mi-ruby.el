@@ -1,4 +1,4 @@
-;;; mi-libc.el --- Mode-info backend for ruby-mode
+;;; mi-ruby.el --- Mode-info backend for ruby-mode
 
 ;; Copyright (C) 1999 Rubikitch <rubikitch@ruby-lang.org>
 ;; Copyright (C) 2001,2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
@@ -71,7 +71,7 @@
   (let ((orig-table (copy-syntax-table))
 	(orig-point (point)))
     (unwind-protect
-	(progn
+	(let ((case-fold-search nil))
 	  (modify-syntax-entry ?$ "w")
 	  (modify-syntax-entry ?@ "w")
 	  (and (forward-word 1)
@@ -80,43 +80,13 @@
       (goto-char orig-point)
       (set-syntax-table orig-table))))
 
-(defun mode-info-ruby-read-string (regexp alist)
-  (let* ((case-fold-search nil)
-	 (v (mode-info-ruby-word-at-point regexp))
-	 (var (completing-read (if v (format "Show info (default %s): " v)
-				 (format "Show info: "))
-			       alist nil t)))
-    (if (equal var "") v var)))
-
 (mode-info-defmethod function-at-point ((class ruby))
   (mode-info-load-index class)
   (mode-info-ruby-word-at-point (mode-info-function-regexp class)))
 
-(mode-info-defmethod read-function ((class ruby))
-  (mode-info-load-index class)
-  (mode-info-ruby-read-string (mode-info-function-regexp class)
-			      (mode-info-function-alist class)))
-
-(mode-info-defmethod function-document ((class mode-info) function)
-  (mode-info-load-index class)
-  (let ((entry (assoc function (mode-info-function-alist class))))
-    (when entry
-      (mode-info-goto-info-entry class entry t))))
-
 (mode-info-defmethod variable-at-point ((class ruby))
   (mode-info-load-index class)
   (mode-info-ruby-word-at-point (mode-info-variable-regexp class)))
-
-(mode-info-defmethod read-variable ((class ruby))
-  (mode-info-load-index class)
-  (mode-info-ruby-read-string (mode-info-variable-regexp class)
-			      (mode-info-variable-alist class)))
-
-(mode-info-defmethod variable-document ((class mode-info) variable)
-  (mode-info-load-index class)
-  (let ((entry (assoc variable (mode-info-variable-alist class))))
-    (when entry
-      (mode-info-goto-info-entry class entry t))))
 
 (defun mode-info-ruby-make-index ()
   "Make index of Info files listed in `mode-info-ruby-titles'."
