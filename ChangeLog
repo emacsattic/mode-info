@@ -1,5 +1,18 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-index.el (mode-info-read-coding-system): Renamed from
+	`mode-info-coding-system'.
+	(mode-info-write-coding-system): New option.
+	(mode-info-make-all-indices): If an error occurs, print its
+	message.
+	(mode-info-node-top-regexp): Relaxed.
+	(make-index-file): Follow the above change.  Refer
+	`mode-info-read-coding-system' instead of
+	`mode-info-coding-system'.
+	(mode-info-dump-symbols): Refer `mode-info-write-coding-system'
+	instead of `mode-info-index-coding-system'.
+	(mode-info-regexp-opt): New function.
+
 	* Makefile.in (clean, distclean): Modified.
 
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
