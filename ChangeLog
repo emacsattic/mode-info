@@ -1,5 +1,7 @@
 2002-07-30  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-scheme.el, mi-guile.el: New file.
+
 	* mi-gauche.el: Reimplemented.
 
 	* mi-fontify.el (mode-info-fontify-keywords): Relaxed.
