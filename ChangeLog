@@ -2,6 +2,9 @@
 
 	* Release 0.1.
 
+	* mi-config.el (mode-info-elisp-add-command-button): Advised for
+	only FSF Emacs.
+
 	* mode-info.el (mode-info-default-class): New option.
 	(mode-info-new): Argument spec is changed.  Refer
 	`mode-info-default-class'.

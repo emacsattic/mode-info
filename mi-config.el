@@ -73,16 +73,17 @@ Add a button which runs `mode-info-describe-variable'."
       (mode-info-emacs-add-variable-button (ad-get-arg 0)))))
 
 (let (current-load-list)
-  (defadvice describe-key
-    (after mode-info-elisp-add-command-button activate compile)
-    "Advised by `mode-info'.
+  (mode-info-static-if (not (featurep 'xemacs))
+      (defadvice describe-key
+	(after mode-info-elisp-add-command-button activate compile)
+	"Advised by `mode-info'.
 Add a button which runs `mode-info-describe-function'."
-    (let ((f (or (string-key-binding (ad-get-arg 0))
-		 (key-binding (ad-get-arg 0)))))
-      (when f
-	(mode-info-with-help-buffer
-	  (mode-info-elisp-add-function-button f)
-	  (mode-info-emacs-add-function-button f))))))
+	(let ((f (or (string-key-binding (ad-get-arg 0))
+		     (key-binding (ad-get-arg 0)))))
+	  (when f
+	    (mode-info-with-help-buffer
+	      (mode-info-elisp-add-function-button f)
+	      (mode-info-emacs-add-function-button f)))))))
 
 (defcustom mode-info-emacs-command-node t
   "*Nil means that the advice, `mode-info-emacs-command-node', is deactivated."
