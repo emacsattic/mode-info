@@ -1,5 +1,7 @@
 2002-07-18  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.0.2.
+
 	* mode-info.el (describe-function-internal): New method.
 	(mode-info-describe-function): Call it.
 	(describe-variable-internal): New method.
