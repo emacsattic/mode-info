@@ -3,27 +3,22 @@ INSTALL_DATA = @INSTALL_DATA@
 prefix       = @prefix@
 datadir      = @datadir@
 lispdir      = @lispdir@
-PACKAGEDIR   = @PACKAGEDIR@
-ICONDIR      = @ICONDIR@
-ADDITIONAL_LOAD_PATH = @ADDITIONAL_LOAD_PATH@
+INDEXDIR     = @INDEXDIR@
 
 SHELL        = /bin/sh
 
 @SET_MAKE@
 EMACS   = @EMACS@
-FLAGS   = -q -no-site-file -batch -eval '(setq load-path (cons "'`pwd`'" load-path))'
+FLAGS   = -q -no-site-file -batch -l elisp-comp
 
 PACKAGE = mode-info
 TARBALL = $(PACKAGE)-$(VERSION).tar.gz
 DISTDIR = $(PACKAGE)-$(VERSION)
-SRCS    = mi-util.el mode-info.el mi-index.el \
-		mi-elisp.el mi-libc.el mi-octave.el mi-perl.el mi-ruby.el \
-		mi-fontify.el mi-config.el
 DOCS    = COPYING ChangeLog README README.ja
-DISTS   = Makefile.in aclocal.m4 configure configure.in install-sh mkinstalldirs
+DISTS   = Makefile.in aclocal.m4 configure configure.in install-sh mkinstalldirs elisp-comp.in
 
-
-default: Makefile $(SRCS:.el=.elc)
+default: Makefile elisp-comp
+	$(MAKE) `$(EMACS) $(FLAGS) -f elisp-comp-target 2>/dev/null`
 
 install: default
 	@$(SHELL) ./mkinstalldirs $(lispdir);\
@@ -32,30 +27,22 @@ install: default
 	  $(INSTALL_DATA) $$p $(lispdir)/$$p;\
 	done
 
-index:
-	$(EMACS) $(FLAGS) -l mode-info.el -f mode-info-make-all-indices
+index: elisp-comp
+	$(EMACS) $(FLAGS) -f elisp-comp-index
 
 install-index: index
 	for p in *.idx ; do\
-	  echo " $(INSTALL_DATA) $$p $(datadir)/$$p";\
-	  $(INSTALL_DATA) $$p $(datadir)/$$p;\
+	  echo " $(INSTALL_DATA) $$p $(INDEXDIR)/$$p";\
+	  $(INSTALL_DATA) $$p $(INDEXDIR)/$$p;\
 	done
 
-install-package:
-	@if test $(PACKAGEDIR) = NONE; then\
-	  echo "What a pity!  Your \"$(EMACS)\" does not support"\
-		"a package system.";\
-	else\
-	  $(MAKE) lispdir="$(PACKAGEDIR)/lisp/mode-info" install;\
-	  $(MAKE) datadir="$(PACKAGEDIR)/etc/mode-info" install-index;\
-	  echo "$(EMACS) $(FLAGS) -f w3mhack-make-package $(PACKAGEDIR)";\
-	  $(EMACS) $(FLAGS) -f w3mhack-make-package $(PACKAGEDIR);\
-	fi
-
 dist: Makefile
-	$(MAKE) VERSION=`$(EMACS) $(FLAGS) -f w3mhack-version 2>/dev/null` tarball
+	$(MAKE) VERSION=`$(EMACS) $(FLAGS) -f elisp-comp-version 2>/dev/null` tarball
 
 Makefile: Makefile.in config.status
+	./config.status
+
+elisp-comp: elisp-comp.in config.status
 	./config.status
 
 config.status: configure
@@ -67,7 +54,7 @@ configure: configure.in aclocal.m4
 tarball: $(DOCS) $(DISTS)
 	-rm -f $(TARBALL) `basename $(TARBALL) .gz`
 	mkdir $(DISTDIR)
-	cp -p $(SRCS) $(DOCS) $(DISTS) $(DISTDIR)
+	cp -p *.el $(DOCS) $(DISTS) $(DISTDIR)
 	find $(DISTDIR) -type d | xargs chmod 755
 	find $(DISTDIR) -type f | xargs chmod 644
 	chmod 755 $(DISTDIR)/configure $(DISTDIR)/install-sh
@@ -76,10 +63,10 @@ tarball: $(DOCS) $(DISTS)
 	rm -rf $(DISTDIR)
 
 clean:
-	-rm -rf *~ *.elc $(PACKAGE)*
+	-rm -rf *~ *.elc $(PACKAGE)-*
 
 distclean: clean
-	-rm -f *.idx config.log config.status config.cache Makefile;\
+	-rm -f *.idx config.log config.status config.cache Makefile elisp-comp ;\
 	rm -fr autom4te*.cache
 
 ## Rule for the developers to check a portability for each module.
