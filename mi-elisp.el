@@ -69,7 +69,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
       (function-at-point)
     (function-called-at-point)))
 
-(mode-info-defmethod read-function ((class mode-info) &optional prompt
+(mode-info-defmethod read-function ((class elisp) &optional prompt
 				    default predicate require-match)
   (unless default
     (setq default (mode-info-function-at-point class)))
@@ -94,13 +94,15 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
     (if entry
 	(mode-info-goto-info-entry class entry)
       (describe-function function)
-      (with-current-buffer "*Help*" (point-min-marker)))))
+      (mode-info-static-if (featurep 'xemacs)
+	  (point-min-marker)
+	(with-current-buffer "*Help*" (point-min-marker))))))
 
 (mode-info-defmethod variable-at-point ((class elisp))
   (let ((v (variable-at-point)))
     (if (eq v 0) nil v)))
 
-(mode-info-defmethod read-variable ((class mode-info) &optional prompt
+(mode-info-defmethod read-variable ((class elisp) &optional prompt
 				    default predicate require-match)
   (unless default
     (setq default (mode-info-variable-at-point class)))
@@ -125,7 +127,9 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
     (if entry
 	(mode-info-goto-info-entry class entry)
       (describe-variable variable)
-      (with-current-buffer "*Help*" (point-min-marker)))))
+      (mode-info-static-if (featurep 'xemacs)
+	  (point-min-marker)
+	(with-current-buffer "*Help*" (point-min-marker))))))
 
 (defun mode-info-elisp-make-index ()
   "Make index of Info files listed in `mode-info-elisp-titles'."
