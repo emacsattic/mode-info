@@ -1,6 +1,6 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* Release 0.1.
+	* Release 0.0.6.
 
 	* mi-util.el (mode-info-static-if): Add edebug form spec.
 
