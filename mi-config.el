@@ -51,7 +51,8 @@
   (autoload 'mode-info-key-or-menu-binding "mi-util"))
 
 (defcustom mode-info-advise-describe-commands
-  (fboundp 'help-xref-button)
+  (and (fboundp 'help-xref-button)
+       (not (fboundp 'define-button-type)))
   "*Non-nil means that `mode-info' advises some describing commands,
 such as `describe-function', `describe-variable' and `describe-key'."
   :group 'mode-info

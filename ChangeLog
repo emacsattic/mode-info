@@ -1,5 +1,8 @@
 2003-02-09  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-config.el (mode-info-advise-describe-commands): Disable for
+	emacsen with `define-button-type', such as Emacs-21.3.50.
+
 	* elisp-comp.in (elisp-comp-target): Exclude `mi-fontify.el' from
 	target files for Mule2.
 
