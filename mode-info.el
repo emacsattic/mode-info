@@ -50,12 +50,12 @@
   :group 'docs)
 
 (defcustom mode-info-index-directory
-  (if (fboundp 'locate-data-directory)
-      (locate-data-directory "mode-info")
-    (let ((dir (expand-file-name "mode-info/" data-directory)))
-      (if (file-directory-p dir)
-	  dir
-	(file-name-directory (locate-library "mode-info.el")))))
+  (or (when (fboundp 'locate-data-directory)
+	(locate-data-directory "mode-info"))
+      (let ((dir (expand-file-name "mode-info/" data-directory)))
+	(if (file-directory-p dir)
+	    dir
+	  (file-name-directory (locate-library "mode-info.el")))))
   "*Directory in whuch all indices of `mode-info' are stored."
   :group 'mode-info
   :type 'directory)
@@ -84,7 +84,7 @@
     (eperl-mode . perl)
     (c-mode . libc)
     (ruby-mode . ruby)
-    (octave-mode . octav))
+    (octave-mode . octave))
   "Alist of major modes and mode-info backends.")
 
 (defun mode-info-read-mode (&optional prompt)
@@ -293,6 +293,19 @@ Return nil if there is no such symbol.")
 	      (cons top
 		    (delq top Info-index-alternatives)))))
     (Info-index-next 0))
+  (mode-info-static-if
+      (and (not (featurep 'xemacs)) (> emacs-major-version 20))
+      ;; When Emacs21 is used, header line and font decoration cause
+      ;; a gap of line number.
+      (let ((end (point))
+	    (start (progn (forward-line -4) (point))))
+	(goto-char end)
+	(if (search-backward (if (symbolp (car entry))
+				 (symbol-name (car entry))
+			       (car entry))
+			     start t)
+	    (forward-line 0)
+	  (goto-char end))))
   (point-marker))
 
 (defun mode-info-goto-info-entry (class entry &optional interactive-select)
