@@ -100,7 +100,7 @@
   (autoload 'mode-info-make-index "mi-index")
   (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
-(defconst mode-info-version "0.1"
+(defconst mode-info-version "0.1.1"
   "Version number of `mode-info'.")
 
 (defgroup mode-info nil
@@ -140,7 +140,8 @@
     (perl perl-mode cperl-mode eperl-mode)
     (libc c-mode c++-mode)
     (ruby ruby-mode)
-    (octave octave-mode))
+    (octave octave-mode)
+    (gauche scheme-mode))
   "*Alist of mode-info classes and major modes."
   :group 'mode-info
   :type '(repeat (cons (symbol :tag "Class")
@@ -161,6 +162,18 @@
 	    (throw 'found-default-class (car elem))))
 	mode-info-default-class)))
 
+(defvar mode-info-available-classes
+  (let (list x)
+    (dolist (d (if noninteractive (list default-directory) load-path))
+      (when (file-directory-p d)
+	(dolist (f (directory-files d nil nil t))
+	  (when (string-match "\\`mi-\\(.*\\)\\.el\\'" f)
+	    (or (member (setq x (match-string 1 f))
+			'("config" "fontify" "index" "util"))
+		(assoc x list)
+		(push (list x) list))))))
+    list))
+
 (defun mode-info-read-class-name (&optional prompt default)
   (unless default
     (setq default (mode-info-default-class-name)))
@@ -172,8 +185,8 @@
 			       (if default
 				   (format "Class (default %s): " default)
 				 "Class: "))
-			     table nil t)))
-    (if (string= x "") default (cdr (assoc x table)))))
+			     mode-info-available-classes nil t)))
+    (if (string= x "") default (intern x))))
 
 (defun mode-info-new (name)
   (or (mode-info-find-class name)
@@ -208,7 +221,7 @@
 (mode-info-defmethod load-index ((class mode-info) &optional force)
   (unless (and (not force) (get class 'index-file-loaded))
     (let ((name (mode-info-index-file-name class))
-	  (indexer-version "0.0.9") ; For old indexers.
+	  (indexer-version "0.1") ; For old indexers.
 	  function-alist function-regexp
 	  variable-alist variable-regexp)
       (when (file-exists-p name)

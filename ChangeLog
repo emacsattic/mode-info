@@ -1,5 +1,10 @@
 2002-07-25  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-version): Release 0.1.1.
+	(mode-info-class-alist): Add `gauche'.
+	(mode-info-available-classes): New internal variable.
+	(mode-info-read-class-name): Refer the above.
+
 	* mi-index.el (mode-info-make-all-indices): Refer
 	`mode-info-available-classes'.
 	(mode-info-index-node-regexp): New constant.
