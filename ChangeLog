@@ -1,5 +1,7 @@
 2002-07-19  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.0.3.
+
 	* mode-info.el (toplevel): Add autoload for functions defined in
 	etags.el.
 	(function-document, variable-document): Changed the spec of its
