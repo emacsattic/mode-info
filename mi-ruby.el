@@ -30,8 +30,8 @@
 ;; Original code was ruby-info.el written by
 ;; Rubikitch <rubikitch@ruby-lang.org>.
 
-;; This file provides interface commands of Info titles which
-;; describes ruby.  It can be downloaded from:
+;; This file provides interface commands of Info which describes Ruby.
+;; It can be downloaded from:
 ;;
 ;;     ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/ruby-texi-1.4.tar.gz
 

@@ -25,8 +25,10 @@
 
 ;;; Commentary:
 
-;; This file provides Info interface commands for major-modes related
-;; to Perl.
+;; This file provides interface commands of Info which describes Perl.
+;; It can be downloaded from:
+;;
+;;    http://namazu.org/~tsuchiya/doc/perl5.000texi-j.tar.gz
 
 
 ;;; Code:
