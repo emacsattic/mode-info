@@ -65,18 +65,28 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 (mode-info-defclass elisp)
 
 (mode-info-defmethod function-at-point ((class elisp))
-  (function-called-at-point))
+  (mode-info-static-if (featurep 'xemacs)
+      (function-at-point)
+    (function-called-at-point)))
 
-(mode-info-defmethod read-function ((class elisp))
-  (let ((enable-recursive-minibuffers t)
-	(f (mode-info-function-at-point class))
-	(x))
-    (setq x (completing-read
-	     (if f
-		 (format "Describe function (default %s): " f)
-	       "Describe function: ")
-	     obarray 'fboundp t))
-    (if (equal x "") f (intern x))))
+(mode-info-defmethod read-function ((class mode-info) &optional prompt
+				    default predicate require-match)
+  (unless default
+    (setq default (mode-info-function-at-point class)))
+  (let* ((enable-recursive-minibuffers t)
+	 (x (completing-read
+	     (or prompt
+		 (if default
+		     (format "[%s] Describe function (default %s): "
+			     (mode-info-class-name class) default)
+		   (format "[%s] Describe function: "
+			   (mode-info-class-name class))))
+	     obarray
+	     (if predicate
+		 `(lambda (x) (and (fboundp x) (,predicate x)))
+	       (function fboundp))
+	     require-match)))
+    (if (string= x "") default (intern x))))
 
 (mode-info-defmethod function-document ((class elisp) function)
   (mode-info-load-index class)
@@ -90,16 +100,24 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (let ((v (variable-at-point)))
     (if (eq v 0) nil v)))
 
-(mode-info-defmethod read-variable ((class elisp))
-  (let ((enable-recursive-minibuffers t)
-	(v (mode-info-variable-at-point class))
-	(x))
-    (setq x (completing-read
-	     (if v
-		 (format "Describe variable (default %s): " v)
-	       "Describe variable: ")
-	     obarray 'boundp t))
-    (if (equal x "") v (intern x))))
+(mode-info-defmethod read-variable ((class mode-info) &optional prompt
+				    default predicate require-match)
+  (unless default
+    (setq default (mode-info-variable-at-point class)))
+  (let* ((enable-recursive-minibuffers t)
+	 (x (completing-read
+	     (or prompt
+		 (if default
+		     (format "[%s] Describe variable (default %s): "
+			     (mode-info-class-name class) default)
+		   (format "[%s] Describe variable: "
+			   (mode-info-class-name class))))
+	     obarray
+	     (if predicate
+		 `(lambda (x) (and (boundp x) (,predicate x)))
+	       (function boundp))
+	     require-match)))
+    (if (string= x "") default (intern x))))
 
 (mode-info-defmethod variable-document ((class elisp) variable)
   (mode-info-load-index class)
