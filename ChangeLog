@@ -1,5 +1,13 @@
 2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-elisp.el (toplevel): Require `mi-config' to use the macro
+	`mode-info-with-help-buffer'.
+	(function-document, variable-document): Use the above macro.
+	(mode-info-elisp-insert-button): New function.
+	(mode-info-elisp-add-function-button): Use the above function.
+	(mode-info-elisp-add-variable-button): Ditto.
+	(mode-info-elisp-info-ref): New function.
+
 	* mi-config.el (toplevel): Add autoload for
 	'mode-info-elisp-info-ref'.
 	(mode-info-advise-describe-commands): New option.

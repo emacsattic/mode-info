@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file provides Info interface commands for major-modes related
-;; to Emacs-Lisp.  These titles are available with this package.
+;; to Emacs-Lisp.  These documents are available with this package.
 ;;
 ;;   Japanese Info for Emacs 20
 ;;     ftp://ftp.ascii.co.jp/pub/GNU/elisp-manual-20-2.5-jp.tgz
@@ -40,6 +40,7 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
+  (require 'mi-config) ; For mode-info-with-help-buffer
   (require 'mi-index))
 
 (eval-and-compile
@@ -124,10 +125,8 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
     (if entry
 	(mode-info-goto-info-entry class entry)
       (describe-function function)
-      (mode-info-static-if (featurep 'xemacs)
-	  (mode-info-elisp-function-document-1 function)
-	(with-current-buffer "*Help*"
-	  (mode-info-elisp-function-document-1 function))))))
+      (mode-info-with-help-buffer
+	(mode-info-elisp-function-document-1 function)))))
 
 (mode-info-defmethod variable-at-point ((class elisp))
   (let ((v (variable-at-point)))
@@ -162,10 +161,8 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
     (if entry
 	(mode-info-goto-info-entry class entry)
       (describe-variable variable)
-      (mode-info-static-if (featurep 'xemacs)
-	  (cons (current-buffer) (point-min))
-	(with-current-buffer "*Help*"
-	  (cons (current-buffer) (point-min)))))))
+      (mode-info-with-help-buffer
+	(cons (current-buffer) (point-min))))))
 
 (mode-info-defmethod describe-variable-internal ((class elisp) variable
 						 &optional keep-window)
@@ -208,45 +205,62 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	       (message msg))
 	   (signal (car err) (cdr err)))))))))
 
+;; The original of this function is `help-insert-xref-button' defined
+;; in help.el of Emacs-21.2.
+(defun mode-info-elisp-insert-button (string function data &optional help-echo)
+  "Insert STRING and make a hyperlink between `help-mode' buffers."
+  (mode-info-static-if (fboundp 'help-xref-button)
+      (let ((pos (point)))
+	(insert string)
+	(goto-char pos)
+	(search-forward string)
+	(mode-info-static-if (>= emacs-major-version 21)
+	    (help-xref-button 0 function data help-echo)
+	  (help-xref-button 0 function data)))
+    (insert string)))
+
 (defun mode-info-elisp-add-function-button (function)
-  (mode-info-static-if (fboundp 'help-insert-xref-button)
-      (let ((buffer-read-only)
-	    (class (mode-info-find-class 'elisp)))
-	(when (mode-info-function-described-p class function)
-	  (save-excursion
-	    (save-match-data
-	      (goto-char (point-max))
-	      (if (re-search-backward "\\[[-a-z]+\\]"
-				      (line-beginning-position) t)
-		  (progn
-		    (end-of-line)
-		    (insert " "))
-		(insert (if (bolp) "\n" "\n\n")))
-	      (help-insert-xref-button "[info]"
-				       'mode-info-describe-function
-				       (list function class t)
-				       "mouse-2, Ret: go to Info.")))))
-    (ignore)))
+  (let ((buffer-read-only)
+	(class (mode-info-find-class 'elisp)))
+    (when (mode-info-function-described-p class function)
+      (save-excursion
+	(save-match-data
+	  (goto-char (point-max))
+	  (if (re-search-backward "\\[[-a-z]+\\]"
+				  (line-beginning-position) t)
+	      (progn
+		(end-of-line)
+		(insert " "))
+	    (insert (if (bolp) "\n" "\n\n")))
+	  (mode-info-elisp-insert-button "[info]"
+					 'mode-info-describe-function
+					 (list function class t)
+					 "mouse-2, Ret: go to Info."))))))
 
 (defun mode-info-elisp-add-variable-button (variable)
-  (mode-info-static-if (fboundp 'help-insert-xref-button)
-      (let ((buffer-read-only)
-	    (class (mode-info-find-class 'elisp)))
-	(when (mode-info-variable-described-p class variable)
-	  (save-excursion
-	    (save-match-data
-	      (goto-char (point-max))
-	      (if (re-search-backward "\\[[-a-z]+\\]"
-				      (line-beginning-position) t)
-		  (progn
-		    (end-of-line)
-		    (insert " "))
-		(insert (if (bolp) "\n" "\n\n")))
-	      (help-insert-xref-button "[info]"
-				       'mode-info-describe-variable
-				       (list variable class t)
-				       "mouse-2, Ret: go to Info.")))))
-    (ignore)))
+  (let ((buffer-read-only)
+	(class (mode-info-find-class 'elisp)))
+    (when (mode-info-variable-described-p class variable)
+      (save-excursion
+	(save-match-data
+	  (goto-char (point-max))
+	  (if (re-search-backward "\\[[-a-z]+\\]"
+				  (line-beginning-position) t)
+	      (progn
+		(end-of-line)
+		(insert " "))
+	    (insert (if (bolp) "\n" "\n\n")))
+	  (mode-info-elisp-insert-button "[info]"
+					 'mode-info-describe-variable
+					 (list variable class t)
+					 "mouse-2, Ret: go to Info."))))))
+
+(defun mode-info-elisp-info-ref (function)
+  "Look up an Emacs Lisp function in the Elisp manual in the Info system."
+  (let ((class (mode-info-find-class 'elisp)))
+    (when (mode-info-function-described-p class function)
+      (mode-info-describe-function-internal
+       class function (memq major-mode '(Info-mode help-mode))))))
 
 (defun mode-info-elisp-make-index ()
   "Make index of Info files listed in `mode-info-elisp-titles'."
