@@ -47,7 +47,7 @@
   :type 'file)
 
 (defcustom mode-info-libc-titles
-  '("libc.info")
+  '("libc")
   "*Info titles about libc."
   :group 'mode-info-libc
   :type mode-info-titles-type)

@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-libc.el (mode-info-libc-titles): Change its default.
+
 	* mi-index.el (mode-info-read-coding-system): Renamed from
 	`mode-info-coding-system'.
 	(mode-info-write-coding-system): New option.
