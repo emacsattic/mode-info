@@ -79,6 +79,25 @@ reaches end of buffer, return that position."
 	(forward-line (if N (1- N) 0))
 	(point)))))
 
+(mode-info-static-if (featurep 'xemacs)
+    (defalias 'mode-info-key-or-menu-binding 'key-or-menu-binding)
+  (defun mode-info-key-or-menu-binding (key)
+    "Return the binding for command KEY in current keymaps."
+    (save-excursion
+      (let ((modifiers (event-modifiers (aref key 0)))
+	    window position)
+	(when (or (memq 'click modifiers)
+		  (memq 'down modifiers)
+		  (memq 'drag modifiers))
+	  (setq window (posn-window (event-start (aref key 0)))
+		position (posn-point (event-start (aref key 0)))))
+	(when (windowp window)
+	  (set-buffer (window-buffer window))
+	  (goto-char position))
+	(mode-info-static-if (fboundp 'string-key-binding)
+	    (or (string-key-binding key) (key-binding key))
+	  (key-binding key))))))
+
 
 ;;; Object System:
 (eval-and-compile

@@ -1,3 +1,11 @@
+2002-07-22  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-config.el (mode-info-key-or-menu-binding): Export to
+	mi-util.el.
+
+	* mi-util.el (mode-info-key-or-menu-binding): Import from
+	mi-config.el.
+
 2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* Release 0.1.

@@ -40,13 +40,15 @@
     "Display the full documentation of VARIABLE (a symbol)." t)
   (autoload 'mode-info-find-tag "mode-info"
     "Find TAG and display it." t)
-  (autoload 'mode-info-make-all-indices "mi-index" nil t)
+  (autoload 'mode-info-make-all-indices "mi-index"
+    "Make indices of all available Info documents." t)
   (autoload 'mode-info-elisp-add-function-button "mi-elisp")
   (autoload 'mode-info-elisp-add-variable-button "mi-elisp")
   (autoload 'mode-info-elisp-info-ref "mi-elisp")
   (autoload 'mode-info-emacs-add-function-button "mi-emacs")
   (autoload 'mode-info-emacs-add-variable-button "mi-emacs")
-  (autoload 'mode-info-emacs-goto-info "mi-emacs"))
+  (autoload 'mode-info-emacs-goto-info "mi-emacs")
+  (autoload 'mode-info-key-or-menu-binding "mi-util"))
 
 (defcustom mode-info-advise-describe-commands
   (fboundp 'help-xref-button)
@@ -87,25 +89,6 @@ Add a button which runs `mode-info-describe-variable'."
       (mode-info-with-help-buffer
 	(mode-info-elisp-add-variable-button (ad-get-arg 0))
 	(mode-info-emacs-add-variable-button (ad-get-arg 0))))))
-
-(mode-info-static-if (featurep 'xemacs)
-    (defalias 'mode-info-key-or-menu-binding 'key-or-menu-binding)
-  (defun mode-info-key-or-menu-binding (key)
-    "Return the binding for command KEY in current keymaps."
-    (save-excursion
-      (let ((modifiers (event-modifiers (aref key 0)))
-	    window position)
-	(when (or (memq 'click modifiers)
-		  (memq 'down modifiers)
-		  (memq 'drag modifiers))
-	  (setq window (posn-window (event-start (aref key 0)))
-		position (posn-point (event-start (aref key 0)))))
-	(when (windowp window)
-	  (set-buffer (window-buffer window))
-	  (goto-char position))
-	(mode-info-static-if (fboundp 'string-key-binding)
-	    (or (string-key-binding key) (key-binding key))
-	  (key-binding key))))))
 
 (let (current-load-list)
   (defadvice describe-key
