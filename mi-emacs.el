@@ -89,7 +89,7 @@
      t)))
 
 (mode-info-define-button-type 'mode-info-emacs-goto-info
-  :supertype 'help-xref
+  ':supertype 'help-xref
   'help-function 'mode-info-emacs-goto-info
   'help-echo "mouse-2, RET: go to Info.")
 

@@ -1,5 +1,14 @@
 2004-11-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-elisp.el (toplevel): Load button.el instead of help.el, in
+	order to avoid overwriting key bindings.  Quote colon-keywords in
+	button definitions.
+
+	* mi-emacs.el (toplevel): Quote a colon-keyword in a button
+	definition.
+
+2004-11-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
 	* mode-info.el (mode-info-version): Release 0.8.1.
 	(mode-info-goto-info-entry-1): When a line number is equal to
 	zero, search the concerend name instead of using line numbers.

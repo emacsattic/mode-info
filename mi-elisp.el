@@ -44,7 +44,8 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
-  (load "help" nil t)  ; For define-button-type() in Emacs-21.3.50.
+  (when (locate-library "button")
+    (require 'button)) ; For define-button-type() in Emacs-21.3.50.
   (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
@@ -259,7 +260,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
       (insert string))))
 
 (mode-info-define-button-type 'mode-info-describe-function
-  :supertype 'help-xref
+  ':supertype 'help-xref
   'help-function 'mode-info-describe-function
   'help-echo "mouse-2, RET: go to Info.")
 
@@ -281,7 +282,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 				   function class t))))))
 
 (mode-info-define-button-type 'mode-info-describe-variable
-  :supertype 'help-xref
+  ':supertype 'help-xref
   'help-function 'mode-info-describe-variable
   'help-echo "mouse-2, RET: go to Info.")
 
