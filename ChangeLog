@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.1.
+
 	* mode-info.el (mode-info-default-class): New option.
 	(mode-info-new): Argument spec is changed.  Refer
 	`mode-info-default-class'.
@@ -15,8 +17,6 @@
 	* mi-elisp.el (mode-info-elisp-titles): Change its default.
 
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
-
-	* Release 0.0.5.
 
 	* mode-info.el (mode-info-index-coding-system): Abolished.
 
@@ -44,8 +44,6 @@
 	* Makefile.in (clean, distclean): Modified.
 
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
-
-	* Release 0.0.4.
 
 	* mode-info.el (mode-info-class-alist): Add `emacs'.
 	(mode-info-show-document): Return the specified position if
@@ -96,8 +94,6 @@
 
 2002-07-19  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* Release 0.0.3.
-
 	* mode-info.el (toplevel): Add autoload for functions defined in
 	etags.el.
 	(function-document, variable-document): Changed the spec of its
@@ -127,8 +123,6 @@
 
 2002-07-18  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* Release 0.0.2.
-
 	* mode-info.el (describe-function-internal): New method.
 	(mode-info-describe-function): Call it.
 	(describe-variable-internal): New method.
@@ -152,7 +146,7 @@
 	(mode-info-elisp-add-variable-button): Call
 	`mode-info-describe-variable' with keep-window option.
 
-2002-07-17  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+2002-07-16  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* Release 0.0.1.
+	* Start project.
 

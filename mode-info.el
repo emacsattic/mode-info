@@ -35,7 +35,7 @@
 ;; called in c-mode, it retrieves the documentation of the specified
 ;; function from GNU C Library Reference Manual, and shows it.  When it
 ;; called in emacs-lisp-mode, it retrieves the documentation from
-;; Emacs-Lisp Reference Manual.  If faiure it shows a documentation
+;; Emacs-Lisp Reference Manual.  If failure it shows a documentation
 ;; string.
 ;;
 ;; The latest version of this package can be downloaded from:
@@ -66,7 +66,7 @@
 ;;         make
 ;;         make install
 ;;
-;; (3) Execute these commands to make indices of all avilable Info
+;; (3) Execute these commands to make indices of all available Info
 ;;     titles and to install them.
 ;;
 ;;         make index
@@ -100,7 +100,7 @@
   (autoload 'mode-info-make-index "mi-index")
   (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
-(defconst mode-info-version "0.0.5"
+(defconst mode-info-version "0.1"
   "Version number of `mode-info'.")
 
 (defgroup mode-info nil
@@ -115,7 +115,7 @@
 	(if (file-directory-p dir)
 	    dir
 	  (file-name-directory (locate-library "mode-info.el")))))
-  "*Directory in whuch all indices of `mode-info' are stored."
+  "*Directory where all indices of `mode-info' are stored."
   :group 'mode-info
   :type 'directory)
 
