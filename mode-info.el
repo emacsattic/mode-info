@@ -208,7 +208,7 @@
 (mode-info-defmethod load-index ((class mode-info) &optional force)
   (unless (and (not force) (get class 'index-file-loaded))
     (let ((name (mode-info-index-file-name class))
-	  indexer-version
+	  (indexer-version "0.0.9") ; For old indexers.
 	  function-alist function-regexp
 	  variable-alist variable-regexp)
       (when (file-exists-p name)
