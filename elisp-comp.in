@@ -52,6 +52,22 @@
 
 (setq load-path (cons default-directory load-path))
 
+(require 'bytecomp)
+(cond
+ ((featurep 'xemacs)
+  ;; Don't warn for the unused non-global variables.
+  (setq byte-compile-warnings
+	(delq 'unused-vars (copy-sequence byte-compile-default-warnings))))
+ ((boundp 'MULE)
+  (require 'poe)
+  (require 'pcustom)
+  ;; Workaround to avoid byte-compile warnings around defcustom.
+  (fset 'elisp-comp-defcustom (symbol-function 'defcustom))
+  (defmacro defcustom (symbol value doc &rest args)
+    (list 'eval-and-compile
+	  (nconc (list 'elisp-comp-defcustom symbol value doc)
+		 args)))))
+
 (defun elisp-comp-version ()
   (require 'mode-info)
   (princ mode-info-version t))

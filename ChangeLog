@@ -1,3 +1,34 @@
+2002-07-19  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mode-info.el (function-document, variable-document): Changed the
+	spec of its return value.
+	(mode-info-show-document): Follow the above change.
+	(mode-info-goto-info-entry-1): Ditto.
+	(read-tag, find-tag-noselect, find-tag-internal): New method.
+	(mode-info-find-tag): New command.
+
+	* mi-util.el (mode-info-defgeneric): Changed error signal.
+
+	* mi-libc.el (Module): Add autoload for functions defined in
+	etags.el.
+	(read-tag, find-tag-noselect): New method.
+
+	* mi-elisp.el (toplevel): Add autoload for functions of
+	find-func.el.
+	(mode-info-elisp-function-document-1): New inline function.
+	(function-document): Call the above function.
+	(mode-info-elisp-variable-document-1): New inline function.
+	(variable-document): Call the above function.
+	(read-tag, find-tag-noselect): New method.
+
+	* mi-config.el (toplevel): Add autoload for `mode-info-find-tag'.
+
+	* elisp-comp.in (toplevel): Install codes to avoid byte-compile
+	warnings for XEmacs and Mule.  This change is suggested by
+	Katsumi Yamaoka <yamaoka@jpl.org>.
+
+	* aclocal.m4 (AC_ADD_LOAD_PATH): Fix typo.
+
 2002-07-18  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* Release 0.0.2.

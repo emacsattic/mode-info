@@ -97,6 +97,27 @@
   (mode-info-load-index class)
   (mode-info-libc-word-at-point (mode-info-variable-alist class)))
 
+(eval-and-compile
+  (autoload 'find-tag-tag "etags")
+  (autoload 'find-tag-noselect "etags"))
+
+(mode-info-defmethod read-tag ((class libc))
+  (find-tag-tag "Find tag: "))
+
+(mode-info-defmethod find-tag-noselect ((class libc) tag)
+  (condition-case err
+      (with-current-buffer (find-tag-noselect tag)
+	(cons (current-buffer) (point)))
+    (error
+     (let ((msg (error-message-string err))
+	   (ret))
+       (or (and (string= msg (format "No tags containing %s" tag))
+		(setq ret (or (mode-info-function-document class tag)
+			      (mode-info-variable-document class tag)))
+		(message msg)
+		ret)
+	   (signal (car err) (cdr err)))))))
+
 (defun mode-info-libc-make-index ()
   "Make index of Info files listed in `mode-info-libc-titles'."
   (interactive)

@@ -136,7 +136,7 @@ AC_DEFUN(AC_ADD_LOAD_PATH,
   AC_ARG_WITH(addpath,
    [  --with-addpath=PATHs    specify additional PATHs for load-path
                           use colons to separate directory names],
-   [AC_MSG_CHECKING([where to find the additional elisp libraries])
+   [AC_MSG_CHECKING([where to find the additional Info files])
       ADDITIONAL_LOAD_PATH="${withval}"
       AC_MSG_RESULT(${ADDITIONAL_LOAD_PATH})],
     ADDITIONAL_LOAD_PATH=NONE)

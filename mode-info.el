@@ -192,7 +192,7 @@ If that doesn't give a function, return nil.")
   (and (assoc function (mode-info-function-alist class)) t))
 
 (mode-info-defgeneric function-document (class function)
-  "Return the marker which points the top of the FUNCTION's document.")
+  "Return a pair (BUFFER . POINT) pointing the top of the FUNCTION's document.")
 
 (mode-info-defmethod function-document ((class mode-info) function)
   (mode-info-load-index class)
@@ -258,7 +258,7 @@ Return nil if there is no such symbol.")
   (and (assoc variable (mode-info-variable-alist class)) t))
 
 (mode-info-defgeneric variable-document (mode variable)
-  "Return the marker which points the top of the VARIABLE's document.")
+  "Return a pair (BUFFER . POINT) pointing the top of the VARIABLE's document.")
 
 (mode-info-defmethod variable-document ((class mode-info) variable)
   (mode-info-load-index class)
@@ -291,31 +291,58 @@ Return nil if there is no such symbol.")
   (mode-info-describe-variable-internal (mode-info-new class-name)
 					variable keep-window))
 
-(defun mode-info-show-document (marker &optional keep-window)
-  "Display the document pointed by MARKER."
-  (let ((org (selected-window))
-	(new (or (get-buffer-window (marker-buffer marker))
-		 (if (or keep-window
-			 (not mode-info-split-window))
-		     (selected-window)
-		   (if (one-window-p)
-		       (split-window)
-		     (next-window))))))
+(mode-info-defgeneric read-tag (class)
+  "Return the tag found around point.")
+
+(mode-info-defgeneric find-tag-noselect (class tag)
+  "Return a pair (BUFFER . POINT) represents TAG.")
+
+(mode-info-defgeneric find-tag-internal (class tag &optional keep-window)
+  "Find TAG.")
+
+(mode-info-defmethod find-tag-internal ((class mode-info) tag
+					&optional keep-window)
+  (mode-info-show-document
+   (save-excursion
+     (save-window-excursion
+       (or (mode-info-find-tag-noselect class tag)
+	   (error "Can't find tag: %s" tag))))
+   keep-window))
+
+(defun mode-info-find-tag (tag &optional class keep-window)
+  "Find TAG and display it."
+  (interactive
+   (let ((class (mode-info-new)))
+     (list (mode-info-read-tag class) class current-prefix-arg)))
+  (mode-info-find-tag-internal class tag keep-window))
+
+(defun mode-info-show-document (buffer-point &optional keep-window)
+  "Display the document pointed by a pair (BUFFER . POINT)."
+  (let* ((buffer (car buffer-point))
+	 (point (cdr buffer-point))
+	 (org (selected-window))
+	 (new (or (unless (eq buffer (current-buffer))
+		    (get-buffer-window buffer))
+		  (if (or keep-window
+			  (not mode-info-split-window))
+		      (selected-window)
+		    (if (one-window-p)
+			(split-window)
+		      (next-window))))))
     (unless (eq org new)
       (unless (pos-visible-in-window-p)
 	(recenter (mode-info-static-if (>= emacs-major-version 20)
 		      (if (> (point) (window-end nil t)) -3 2)
 		    (/ (window-height) 2))))
       (select-window new))
-    (with-current-buffer (marker-buffer marker)
+    (with-current-buffer buffer
       (set-window-buffer new (current-buffer))
-      (goto-char marker)
-      (push-mark marker t t)
+      (goto-char point)
+      (push-mark point t t)
       (unless (bobp)
 	(recenter 2)))
     (unless (or keep-window mode-info-select-window)
-      (select-window org))
-    (set-marker marker nil)))
+      (select-window org))))
 
 (defsubst mode-info-goto-info-entry-1 (entry &optional interactive-select)
   (if (<= (length entry) 3)
@@ -365,7 +392,7 @@ Return nil if there is no such symbol.")
 			     start t)
 	    (forward-line 0)
 	  (goto-char end))))
-  (point-marker))
+  (cons (current-buffer) (point)))
 
 (defun mode-info-goto-info-entry (class entry &optional interactive-select)
   (mode-info-static-if (>= emacs-major-version 20)

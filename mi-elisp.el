@@ -42,6 +42,11 @@
   (require 'cl)
   (require 'mi-index))
 
+(eval-and-compile
+  (autoload 'find-function-read "find-func")
+  (autoload 'find-function-noselect "find-func")
+  (autoload 'find-variable-noselect "find-func"))
+
 (defgroup mode-info-elisp nil
   "Various sorts of improved help system for emacs-lisp-mode."
   :group 'mode-info)
@@ -100,6 +105,19 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (mode-info-load-index class)
   (and (assq function (mode-info-function-alist class)) t))
 
+(defun mode-info-elisp-function-document-1 (function)
+  (goto-char (point-max))
+  (forward-line -1)
+  (or (when (search-forward "not documented" nil t)
+	(let ((x (ignore-errors
+		   (let ((message-log-max
+			  (and debug-on-error message-log-max)))
+		     (find-function-noselect function)))))
+	  (when x
+	    (message "%s is not documented" function)
+	    x)))
+      (cons (current-buffer) (point-min))))
+
 (mode-info-defmethod function-document ((class elisp) function)
   (mode-info-load-index class)
   (let ((entry (assq function (mode-info-function-alist class))))
@@ -107,8 +125,9 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	(mode-info-goto-info-entry class entry)
       (describe-function function)
       (mode-info-static-if (featurep 'xemacs)
-	  (point-min-marker)
-	(with-current-buffer "*Help*" (point-min-marker))))))
+	  (mode-info-elisp-function-document-1 function)
+	(with-current-buffer "*Help*"
+	  (mode-info-elisp-function-document-1 function))))))
 
 (mode-info-defmethod variable-at-point ((class elisp))
   (let ((v (variable-at-point)))
@@ -137,6 +156,19 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (mode-info-load-index class)
   (and (assq variable (mode-info-variable-alist class)) t))
 
+(defsubst mode-info-elisp-variable-document-1 (variable)
+  (goto-char (point-max))
+  (forward-line -2)
+  (or (when (search-forward "not documented as a variable." nil t)
+	(let ((x (ignore-errors
+		   (let ((message-log-max
+			  (and debug-on-error message-log-max)))
+		     (find-variable-noselect variable)))))
+	  (when x
+	    (message "%s is not documented as a variable" variable)
+	    x)))
+      (cons (current-buffer) (point-min))))
+
 (mode-info-defmethod variable-document ((class elisp) variable)
   (mode-info-load-index class)
   (let ((entry (assq variable (mode-info-variable-alist class))))
@@ -144,8 +176,9 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	(mode-info-goto-info-entry class entry)
       (describe-variable variable)
       (mode-info-static-if (featurep 'xemacs)
-	  (point-min-marker)
-	(with-current-buffer "*Help*" (point-min-marker))))))
+	  (mode-info-elisp-variable-document-1 variable)
+	(with-current-buffer "*Help*"
+	  (mode-info-elisp-variable-document-1 variable))))))
 
 (mode-info-defmethod describe-variable-internal ((class elisp) variable
 						 &optional keep-window)
@@ -153,6 +186,33 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (when (mode-info-variable-described-p class variable)
     (message "%s's value is %s"
 	     variable (prin1-to-string (symbol-value variable)))))
+
+(mode-info-defmethod read-tag ((class elisp))
+  (if (mode-info-variable-at-point class)
+      (cons (car (find-function-read t)) nil)
+    (cons (car (find-function-read)) t)))
+
+(mode-info-defmethod find-tag-noselect ((class elisp) tag)
+  (when (consp tag)
+    (if (cdr tag)
+	(condition-case err
+	    (find-function-noselect (car tag))
+	  (error
+	   (let ((msg (error-message-string err)))
+	     (if (string= msg
+			  (format "%s is a primitive function" (car tag)))
+		 (prog1 (mode-info-function-document class (car tag))
+		   (message msg))
+	       (signal (car err) (cdr err))))))
+      (condition-case err
+	  (find-variable-noselect (car tag))
+	(error
+	 (let ((msg (error-message-string err)))
+	   (if (string= msg
+			(format "Don't know where `%s' is defined" (car tag)))
+	       (prog1 (mode-info-variable-document class (car tag))
+		 (message msg))
+	     (signal (car err) (cdr err)))))))))
 
 (defun mode-info-elisp-add-function-button (function)
   (mode-info-static-if (fboundp 'help-insert-xref-button)

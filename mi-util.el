@@ -144,7 +144,9 @@ entity."
 	    method
 	    ,@(delq '&rest (delq '&optional (copy-sequence args))))
 	 (signal 'mode-info-void-method
-		 (cons (mode-info-class ,(car args)) (quote ,name)))))))
+		 (make-symbol
+		  (mode-info-method-symbol-name (quote ,name)
+						,(car args))))))))
 
 (eval-and-compile
   (defun mode-info-method-search-next (name class)
