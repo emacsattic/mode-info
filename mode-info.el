@@ -135,13 +135,15 @@
   :type 'symbol)
 
 (defcustom mode-info-class-alist
-  '((elisp emacs-lisp-mode lisp-interaction-mode)
-    (emacs nil)
-    (perl perl-mode cperl-mode eperl-mode)
-    (libc c-mode c++-mode)
-    (ruby ruby-mode)
+  '((elisp  emacs-lisp-mode lisp-interaction-mode)
+    (emacs  nil)
+    (perl   perl-mode cperl-mode eperl-mode)
+    (libc   c-mode c++-mode)
+    (ruby   ruby-mode)
     (octave octave-mode)
-    (gauche scheme-mode))
+    (guile  scheme-mode scheme-interaction-mode inferior-scheme-mode)
+    (gauche scheme-mode scheme-interaction-mode inferior-scheme-mode)
+    (scheme scheme-mode scheme-interaction-mode inferior-scheme-mode))
   "*Alist of mode-info classes and major modes."
   :group 'mode-info
   :type '(repeat (cons (symbol :tag "Class")
