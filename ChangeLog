@@ -1,5 +1,7 @@
 2004-11-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-version): Release 0.8.2.
+
 	* mi-elisp.el (toplevel): Load help-mode.el instead of help.el, in
 	order to avoid overwriting key bindings.  Quote colon-keywords in
 	button definitions.
