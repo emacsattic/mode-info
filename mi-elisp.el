@@ -26,7 +26,13 @@
 ;;; Commentary:
 
 ;; This file provides Info interface commands for major-modes related
-;; to Emacs-Lisp.
+;; to Emacs-Lisp.  These titles are available with this package.
+;;
+;;   Japanese Info for Emacs 20
+;;     ftp://ftp.ascii.co.jp/pub/GNU/elisp-manual-20-2.5-jp.tgz
+;;
+;;   Japanese Info for Emacs 19
+;;     ftp://etlport.etl.go.jp/pub/mule/elisp-manual-19-2.4-jp2.0.tar.gz
 
 
 ;;; Code:
@@ -61,6 +67,8 @@
 Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\|\
 \\(User[ \t]+\\)?Option\\):[ \t]+\\([^ \t\n]+\\)[ \t\n]")
 (defconst mode-info-elisp-entry-pos 7)
+(defconst mode-info-elisp-packages
+  '(calender diary-lib dired edebug facemenu font-lock view))
 
 (mode-info-defclass elisp)
 
@@ -87,6 +95,10 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	       (function fboundp))
 	     require-match)))
     (if (string= x "") default (intern x))))
+
+(mode-info-defmethod function-described-p ((class elisp) function)
+  (mode-info-load-index class)
+  (and (assq function (mode-info-function-alist class)) t))
 
 (mode-info-defmethod function-document ((class elisp) function)
   (mode-info-load-index class)
@@ -121,6 +133,10 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	     require-match)))
     (if (string= x "") default (intern x))))
 
+(mode-info-defmethod variable-described-p ((class elisp) variable)
+  (mode-info-load-index class)
+  (and (assq variable (mode-info-variable-alist class)) t))
+
 (mode-info-defmethod variable-document ((class elisp) variable)
   (mode-info-load-index class)
   (let ((entry (assq variable (mode-info-variable-alist class))))
@@ -131,9 +147,41 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (point-min-marker)
 	(with-current-buffer "*Help*" (point-min-marker))))))
 
+(defun mode-info-elisp-add-function-button (function)
+  (mode-info-static-if (fboundp 'help-insert-xref-button)
+      (let ((buffer-read-only)
+	    (class (mode-info-find-class 'elisp)))
+	(when (mode-info-function-described-p class function)
+	  (save-excursion
+	    (save-match-data
+	      (goto-char (point-max))
+	      (insert (if (bolp) "\n" "\n\n"))
+	      (help-insert-xref-button "[info]"
+				       'mode-info-describe-function
+				       (list function class)
+				       "Ret: go to Info.")))))
+    (ignore)))
+
+(defun mode-info-elisp-add-variable-button (variable)
+  (mode-info-static-if (fboundp 'help-insert-xref-button)
+      (let ((buffer-read-only)
+	    (class (mode-info-find-class 'elisp)))
+	(when (mode-info-variable-described-p class variable)
+	  (save-excursion
+	    (save-match-data
+	      (goto-char (point-max))
+	      (insert (if (bolp) "\n" "\n\n"))
+	      (help-insert-xref-button "[info]"
+				       'mode-info-describe-variable
+				       (list variable class)
+				       "Ret: go to Info.")))))
+    (ignore)))
+
 (defun mode-info-elisp-make-index ()
   "Make index of Info files listed in `mode-info-elisp-titles'."
   (interactive)
+  (dolist (package mode-info-elisp-packages)
+    (ignore-errors (require package)))
   (mode-info-make-index 'elisp
 			mode-info-elisp-titles
 			mode-info-elisp-entry-regexp
