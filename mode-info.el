@@ -25,6 +25,62 @@
 
 ;;; Commentary:
 
+;; This package provides improved describe-function and
+;; describe-variable and combines major modes to edit programming
+;; languages and its Info closely.
+;;
+;; `mode-info-describe-function' which is one of commands defined by
+;; this package, is very similar to `describe-function', but can select
+;; the appropriate document based on major-mode.  For example, when it
+;; called in c-mode, it retrieves the documentation of the specified
+;; function from GNU C Library Reference Manual, and shows it.  When it
+;; called in emacs-lisp-mode, it retrieves the documentation from
+;; Emacs-Lisp Reference Manual.  If faiure it shows a documentation
+;; string.
+;;
+;; The latest version of this package can be downloaded from:
+;;
+;;     http://namazu.org/~tsuchiya/elisp/mode-info.tar.gz
+
+
+;;; Install:
+
+;; Before installation, Info documents will have to be installed.
+;;
+;; (1) Run configure script:
+;;
+;;         ./configure
+;;
+;;     This should setup stuffs to build mode-info.  If Info documents
+;;     are installed to an unusual directory, the installer will miss
+;;     them.  In this case, it is necessary to tell their place to the
+;;     installer, as follows:
+;;
+;;         ./configure --with-info-addpath=DIR1:DIR2
+;;
+;;     For more detail, see the help message of configure script.
+;;
+;; (2) Execute these commands to byte compile emacs-lisp programs and to
+;;     install them.
+;;
+;;         make
+;;         make install
+;;
+;; (3) Execute these commands to make indices of all avilable Info
+;;     titles and to install them.
+;;
+;;         make index
+;;         make install-index
+;;
+;;     If you want to keep old indices, you can skip this step.
+;;
+;; (4) Put these following expressions to your ~/.emacs.
+;;
+;;        (require 'mi-config)
+;;        (global-set-key "\C-hf" 'mode-info-describe-function)
+;;        (global-set-key "\C-hv" 'mode-info-describe-variable)
+;;        (global-set-key "\M-." 'mode-info-find-tag)
+
 
 ;;; Code:
 
@@ -73,6 +129,11 @@
   :group 'mode-info
   :type 'boolean)
 
+(defcustom mode-info-default-class 'elisp
+  "*Default mode-info class."
+  :group 'mode-info
+  :type 'symbol)
+
 (defcustom mode-info-class-alist
   '((elisp emacs-lisp-mode lisp-interaction-mode)
     (emacs nil)
@@ -97,7 +158,8 @@
       (catch 'found-default-class
 	(dolist (elem mode-info-class-alist)
 	  (when (memq mode (cdr elem))
-	    (throw 'found-default-class (car elem)))))))
+	    (throw 'found-default-class (car elem))))
+	mode-info-default-class)))
 
 (defun mode-info-read-class-name (&optional prompt default)
   (unless default
@@ -113,9 +175,7 @@
 			     table nil t)))
     (if (string= x "") default (cdr (assoc x table)))))
 
-(defun mode-info-new (&optional name)
-  (unless name
-    (setq name (or (mode-info-default-class-name) 'elisp)))
+(defun mode-info-new (name)
   (or (mode-info-find-class name)
       (progn
 	(require (intern (concat "mi-" (symbol-name name))))
@@ -292,7 +352,7 @@ Return nil if there is no such symbol.")
   "Return the tag found around point.")
 
 (mode-info-defmethod read-tag ((class mode-info))
-  (find-tag-tag "Find tag: "))
+  (find-tag-tag (format "[%s] Find tag: " (mode-info-class-name class))))
 
 (mode-info-defgeneric find-tag-noselect (class tag)
   "Return a pair (BUFFER . POINT) represents TAG.")
@@ -323,12 +383,14 @@ Return nil if there is no such symbol.")
 	   (error "Can't find tag: %s" tag))))
    keep-window))
 
-(defun mode-info-find-tag (tag &optional class keep-window)
+(defun mode-info-find-tag (tag &optional class-name keep-window)
   "Find TAG and display it."
   (interactive
-   (let ((class (mode-info-new)))
-     (list (mode-info-read-tag class) class current-prefix-arg)))
-  (mode-info-find-tag-internal class tag keep-window))
+   (let ((name (mode-info-default-class-name)))
+     (list (mode-info-read-tag (mode-info-new name))
+	   name
+	   current-prefix-arg)))
+  (mode-info-find-tag-internal (mode-info-new class-name) tag keep-window))
 
 (defun mode-info-show-document (buffer-point &optional keep-window)
   "Display the document pointed by a pair (BUFFER . POINT)."

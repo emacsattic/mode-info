@@ -1,5 +1,11 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-default-class): New option.
+	(mode-info-new): Argument spec is changed.  Refer
+	`mode-info-default-class'.
+	(read-tag): Print the class name in prompt.
+	(mode-info-find-tag): Reimplemented.
+
 	* mi-index.el (mode-info-search-info-files): Check whether
 	directory exists before `directory-files' is called.
 	(mode-info-regexp-opt): Install workaround to avoid shy-grouping.
