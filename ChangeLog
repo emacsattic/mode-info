@@ -1,3 +1,18 @@
+2002-07-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-config.el (toplevel): Add autoload for
+	'mode-info-elisp-info-ref'.
+	(mode-info-advise-describe-commands): New option.
+	(mode-info-elisp-add-function-button): Refer the above option.
+	(mode-info-elisp-add-variable-button): Ditto.
+	(mode-info-key-or-menu-binding): New function.
+	(mode-info-elisp-add-command-button): Use the above function and
+	refer the above option.
+	(mode-info-advise-info-commands): Renamed from
+	`mode-info-emacs-command-node'.
+	(mode-info-emacs-command-node): Follow the above renaming.
+	(mode-info-elisp-info-ref): New advise.
+
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* Release 0.0.6.

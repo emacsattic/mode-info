@@ -43,9 +43,23 @@
   (autoload 'mode-info-make-all-indices "mi-index" nil t)
   (autoload 'mode-info-elisp-add-function-button "mi-elisp")
   (autoload 'mode-info-elisp-add-variable-button "mi-elisp")
+  (autoload 'mode-info-elisp-info-ref "mi-elisp")
   (autoload 'mode-info-emacs-add-function-button "mi-emacs")
   (autoload 'mode-info-emacs-add-variable-button "mi-emacs")
   (autoload 'mode-info-emacs-goto-info "mi-emacs"))
+
+(defcustom mode-info-advise-describe-commands
+  (fboundp 'help-xref-button)
+  "*Non-nil means that `mode-info' advises some describing commands,
+such as `describe-function', `describe-variable' and `describe-key'."
+  :group 'mode-info
+  :type 'boolean)
+
+(defcustom mode-info-advise-info-commands t
+  "*Non-nil means that `mode-info' advises some Info commands,
+such as `Info-goto-emacs-command-node' and `Info-elisp-ref'."
+  :group 'mode-info
+  :type 'boolean)
 
 (put 'mode-info-with-help-buffer 'lisp-indent-function 0)
 (put 'mode-info-with-help-buffer 'edebug-form-spec t)
@@ -59,47 +73,73 @@
     (after mode-info-elisp-add-function-button activate compile)
     "Advised by `mode-info'.
 Add a button which runs `mode-info-describe-function'."
-    (mode-info-with-help-buffer
-      (mode-info-elisp-add-function-button (ad-get-arg 0))
-      (mode-info-emacs-add-function-button (ad-get-arg 0)))))
+    (when mode-info-advise-describe-commands
+      (mode-info-with-help-buffer
+	(mode-info-elisp-add-function-button (ad-get-arg 0))
+	(mode-info-emacs-add-function-button (ad-get-arg 0))))))
 
 (let (current-load-list)
   (defadvice describe-variable
     (after mode-info-elisp-add-variable-button activate compile)
     "Advised by `mode-info'.
 Add a button which runs `mode-info-describe-variable'."
-    (mode-info-with-help-buffer
-      (mode-info-elisp-add-variable-button (ad-get-arg 0))
-      (mode-info-emacs-add-variable-button (ad-get-arg 0)))))
+    (when mode-info-advise-describe-commands
+      (mode-info-with-help-buffer
+	(mode-info-elisp-add-variable-button (ad-get-arg 0))
+	(mode-info-emacs-add-variable-button (ad-get-arg 0))))))
+
+(mode-info-static-if (featurep 'xemacs)
+    (defalias 'mode-info-key-or-menu-binding 'key-or-menu-binding)
+  (defun mode-info-key-or-menu-binding (key)
+    "Return the binding for command KEY in current keymaps."
+    (save-excursion
+      (let ((modifiers (event-modifiers (aref key 0)))
+	    window position)
+	(when (or (memq 'click modifiers)
+		  (memq 'down modifiers)
+		  (memq 'drag modifiers))
+	  (setq window (posn-window (event-start (aref key 0)))
+		position (posn-point (event-start (aref key 0)))))
+	(when (windowp window)
+	  (set-buffer (window-buffer window))
+	  (goto-char position))
+	(mode-info-static-if (fboundp 'string-key-binding)
+	    (or (string-key-binding key) (key-binding key))
+	  (key-binding key))))))
 
 (let (current-load-list)
-  (mode-info-static-if (not (featurep 'xemacs))
-      (defadvice describe-key
-	(after mode-info-elisp-add-command-button activate compile)
-	"Advised by `mode-info'.
+  (defadvice describe-key
+    (after mode-info-elisp-add-command-button activate compile)
+    "Advised by `mode-info'.
 Add a button which runs `mode-info-describe-function'."
-	(let ((f (or (string-key-binding (ad-get-arg 0))
-		     (key-binding (ad-get-arg 0)))))
-	  (when f
-	    (mode-info-with-help-buffer
-	      (mode-info-elisp-add-function-button f)
-	      (mode-info-emacs-add-function-button f)))))))
-
-(defcustom mode-info-emacs-command-node t
-  "*Nil means that the advice, `mode-info-emacs-command-node', is deactivated."
-  :group 'mode-info
-  :type 'boolean)
+    (when mode-info-advise-describe-commands
+      (let ((func (mode-info-key-or-menu-binding (ad-get-arg 0))))
+	(unless (or (null func) (integerp func))
+	  (mode-info-with-help-buffer
+	    (mode-info-elisp-add-function-button func)
+	    (mode-info-emacs-add-function-button func)))))))
 
 (let (current-load-list)
   (defadvice Info-goto-emacs-command-node
     (around mode-info-emacs-command-node activate compile)
     "Advised by `mode-info'.
-Search documents in Infos specified in `mode-info-emacs-titles',
-instead of \"emacs\".  Check `mode-info-emacs-command-node' also."
-    (if mode-info-emacs-command-node
-	(or (mode-info-emacs-goto-info (ad-get-arg 0))
-	    ad-do-it)
-      ad-do-it)))
+Look up a documentation from `mode-info-emacs-titles' instead of \"emacs\"
+when `mode-info-advise-info-commands' is set to a value other than nil."
+    (or (when mode-info-advise-info-commands
+	  (mode-info-emacs-goto-info (ad-get-arg 0)))
+	ad-do-it)))
+
+(let (current-load-list)
+  ;; This advice will be useless for FSF Emacsen, because FSF Emacen
+  ;; does not have Info-elisp-ref() but XEmacs have.
+  (defadvice Info-elisp-ref
+    (around mode-info-elisp-info-ref activate compile)
+    "Advised by `mode-info'.
+Look up a documentation from `mode-info-elisp-titles' instead of \"elisp\"
+when `mode-info-advise-info-commands' is set to a value other than nil."
+    (or (when mode-info-advise-info-commands
+	  (mode-info-elisp-info-ref (ad-get-arg 0)))
+	ad-do-it)))
 
 (provide 'mi-config)
 
