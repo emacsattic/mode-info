@@ -1,3 +1,15 @@
+2002-07-18  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mode-info.el (mode-info-describe-function): Accept the 3rd
+	optional argument, keep-window.
+	(mode-info-describe-variable): Ditto.
+	(mode-info-show-document): Ditto.
+
+	* mi-elisp.el (mode-info-elisp-add-function-button): Call
+	`mode-info-describe-function' with keep-window option.
+	(mode-info-elisp-add-variable-button): Call
+	`mode-info-describe-variable' with keep-window option.
+
 2002-07-17  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* Release 0.0.1.

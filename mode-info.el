@@ -200,7 +200,7 @@ If that doesn't give a function, return nil.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
-(defun mode-info-describe-function (function &optional class-name)
+(defun mode-info-describe-function (function &optional class-name keep-window)
   "Display the full documentation of FUNCTION (a symbol)."
   (interactive
    (let ((name (if current-prefix-arg
@@ -209,10 +209,11 @@ If that doesn't give a function, return nil.")
      (list (mode-info-read-function (mode-info-new name) nil nil nil t)
 	   name)))
   (mode-info-show-document
-   (save-excursion
+    (save-excursion
      (save-window-excursion
        (or (mode-info-function-document (mode-info-new class-name) function)
-	   (error "Undocumented function: %s" function))))))
+	   (error "Undocumented function: %s" function))))
+    keep-window))
 
 (mode-info-defgeneric variable-at-point (mode)
   "Return the bound variable symbol found around point.
@@ -255,7 +256,7 @@ Return nil if there is no such symbol.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
-(defun mode-info-describe-variable (variable &optional class-name)
+(defun mode-info-describe-variable (variable &optional class-name keep-window)
   "Display the full documentation of VARIABLE (a symbol)."
   (interactive
    (let ((name (if current-prefix-arg
@@ -267,17 +268,19 @@ Return nil if there is no such symbol.")
    (save-excursion
      (save-window-excursion
        (or (mode-info-variable-document (mode-info-new class-name) variable)
-	   (error "Undocumented variable: %s" variable))))))
+	   (error "Undocumented variable: %s" variable))))
+   keep-window))
 
-(defun mode-info-show-document (marker)
+(defun mode-info-show-document (marker &optional keep-window)
   "Display the document pointed by MARKER."
   (let ((org (selected-window))
 	(new (or (get-buffer-window (marker-buffer marker))
-		 (if mode-info-split-window
-		     (if (one-window-p)
-			 (split-window)
-		       (next-window))
-		   (selected-window)))))
+		 (if (or keep-window
+			 (not mode-info-split-window))
+		     (selected-window)
+		   (if (one-window-p)
+		       (split-window)
+		     (next-window))))))
     (unless (eq org new)
       (unless (pos-visible-in-window-p)
 	(recenter (mode-info-static-if (>= emacs-major-version 20)
@@ -290,7 +293,7 @@ Return nil if there is no such symbol.")
       (push-mark marker t t)
       (unless (bobp)
 	(recenter 2)))
-    (unless mode-info-select-window
+    (unless (or keep-window mode-info-select-window)
       (select-window org))
     (set-marker marker nil)))
 

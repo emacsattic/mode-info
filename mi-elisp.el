@@ -155,11 +155,12 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (insert (if (bolp) "\n" "\n\n"))
-	      (help-insert-xref-button "[info]"
+	      (insert (if (bolp) "\n[" "\n\n["))
+	      (help-insert-xref-button "info"
 				       'mode-info-describe-function
-				       (list function class)
-				       "Ret: go to Info.")))))
+				       (list function class t)
+				       "mouse-2, Ret: go to Info.")
+	      (insert "]")))))
     (ignore)))
 
 (defun mode-info-elisp-add-variable-button (variable)
@@ -170,11 +171,12 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	  (save-excursion
 	    (save-match-data
 	      (goto-char (point-max))
-	      (insert (if (bolp) "\n" "\n\n"))
-	      (help-insert-xref-button "[info]"
+	      (insert (if (bolp) "\n[" "\n\n["))
+	      (help-insert-xref-button "info"
 				       'mode-info-describe-variable
-				       (list variable class)
-				       "Ret: go to Info.")))))
+				       (list variable class t)
+				       "mouse-2, Ret: go to Info.")
+	      (insert "]")))))
     (ignore)))
 
 (defun mode-info-elisp-make-index ()
