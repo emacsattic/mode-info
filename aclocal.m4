@@ -66,56 +66,6 @@ AC_DEFUN(AC_PATH_EMACS,
   esac
   AC_MSG_RESULT(${flavor})])
 
-AC_DEFUN(AC_EXAMINE_PACKAGEDIR,
- [dnl Examine PACKAGEDIR.
-  AC_EMACS_LISP(PACKAGEDIR,
-    (let ((prefix \"${prefix}\")\
-	  package-dir)\
-      (if (boundp (quote early-packages))\
-	  (let ((dirs (append (if early-package-load-path early-packages)\
-			      (if late-package-load-path late-packages)\
-			      (if last-package-load-path last-packages))))\
-	    (while (and dirs (not package-dir))\
-	      (if (file-directory-p (car dirs))\
-		  (setq package-dir (car dirs)\
-			dirs (cdr dirs))))))\
-      (if package-dir\
-	  (progn\
-	    (if (string-match \"/\$\" package-dir)\
-		(setq package-dir (substring package-dir 0\
-					     (match-beginning 0))))\
-	    (if (and prefix\
-		     (progn\
-		       (setq prefix (file-name-as-directory prefix))\
-		       (eq 0 (string-match (regexp-quote prefix)\
-					   package-dir))))\
-		(replace-match \"\$(prefix)/\" nil nil package-dir)\
-	      package-dir))\
-	\"NONE\")),
-    noecho)])
-
-AC_DEFUN(AC_PATH_PACKAGEDIR,
- [dnl Check for PACKAGEDIR.
-  if test ${EMACS_FLAVOR} = xemacs; then
-    AC_MSG_CHECKING([where the XEmacs package is])
-    AC_ARG_WITH(packagedir,
-      [  --with-packagedir=DIR   package DIR for XEmacs],
-      [if test "${withval}" = yes -o -z "${withval}"; then
-	AC_EXAMINE_PACKAGEDIR
-      else
-	PACKAGEDIR="${withval}"
-      fi],
-      AC_EXAMINE_PACKAGEDIR)
-    if test -z "${PACKAGEDIR}"; then
-      AC_MSG_RESULT(not found)
-    else
-      AC_MSG_RESULT(${PACKAGEDIR})
-    fi
-  else
-    PACKAGEDIR=NONE
-  fi
-  AC_SUBST(PACKAGEDIR)])
-
 AC_DEFUN(AC_PATH_LISPDIR, [
   if test ${EMACS_FLAVOR} = emacs21; then
 	tribe=emacs
@@ -129,8 +79,7 @@ AC_DEFUN(AC_PATH_LISPDIR, [
 	AC_MSG_RESULT(${prefix})
   fi
   AC_ARG_WITH(lispdir,
-    [  --with-lispdir=DIR      where lisp files should go
-                          (use --with-packagedir for XEmacs package)],
+    [  --with-lispdir=DIR      where lisp files should go],
     lispdir="${withval}")
   AC_MSG_CHECKING([where lisp files should go])
   if test -z "${lispdir}"; then
@@ -139,22 +88,48 @@ AC_DEFUN(AC_PATH_LISPDIR, [
     if test x${theprefix} = xNONE; then
 	theprefix=${ac_default_prefix}
     fi
-    lispdir="\$(datadir)/${tribe}/site-lisp/w3m"
+    lispdir="\$(datadir)/${tribe}/site-lisp/mode-info"
     for thedir in share lib; do
 	potential=
 	if test -d ${theprefix}/${thedir}/${tribe}/site-lisp; then
-	   lispdir="\$(prefix)/${thedir}/${tribe}/site-lisp/w3m"
+	   lispdir="\$(prefix)/${thedir}/${tribe}/site-lisp/mode-info"
 	   break
 	fi
     done
   fi
-  if test ${EMACS_FLAVOR} = xemacs; then
-    AC_MSG_RESULT(${lispdir}/
-         (it will be ignored when \"make install-package\" is done))
-  else
-    AC_MSG_RESULT(${lispdir}/)
-  fi
+  AC_MSG_RESULT(${lispdir})
   AC_SUBST(lispdir)])
+
+AC_DEFUN(AC_PATH_INDEXDIR,
+ [dnl Examin index directory.
+
+  dnl Ignore cache.
+  unset EMACS_cv_SYS_indexdir;
+
+  if test ${EMACS_FLAVOR} = xemacs -o ${EMACS_FLAVOR} = emacs21; then
+    AC_ARG_WITH(indexdir,
+     [  --with-indexdir=DIR     directory for indices [\$(data-directory)/mode-info]],
+      INDEXDIR="${withval}")
+    AC_MSG_CHECKING([where icon files should go])
+    if test -z "${INDEXDIR}"; then
+      dnl Set the default value.
+      AC_EMACS_LISP(indexdir,
+        (let ((prefix \"${prefix}\")\
+	      (default (expand-file-name \"mode-info\" data-directory)))\
+	  (if (and prefix\
+		   (progn\
+		     (setq prefix (file-name-as-directory prefix))\
+		     (eq 0 (string-match (regexp-quote prefix) default))))\
+	      (replace-match \"\$(prefix)/\" nil nil default)\
+	    default)),
+	${prefix},noecho)
+      INDEXDIR=${EMACS_cv_SYS_indexdir}
+    fi
+    AC_MSG_RESULT(${INDEXDIR})
+  else
+    INDEXDIR=NONE
+  fi
+  AC_SUBST(INDEXDIR)])
 
 AC_DEFUN(AC_ADD_LOAD_PATH,
  [dnl Check for additional load path.
@@ -166,3 +141,15 @@ AC_DEFUN(AC_ADD_LOAD_PATH,
       AC_MSG_RESULT(${ADDITIONAL_LOAD_PATH})],
     ADDITIONAL_LOAD_PATH=NONE)
   AC_SUBST(ADDITIONAL_LOAD_PATH)])
+
+AC_DEFUN(AC_ADD_INFO_PATH,
+ [dnl Check for additional Info path.
+  AC_ARG_WITH(info-addpath,
+   [  --with-info-addpath=PATHs
+                          specify additional PATHs for Info
+                          use colons to separate directory names],
+   [AC_MSG_CHECKING([where to find the additional elisp libraries])
+      ADDITIONAL_INFO_PATH="${withval}"
+      AC_MSG_RESULT(${ADDITIONAL_INFO_PATH})],
+    ADDITIONAL_INFO_PATH=NONE)
+  AC_SUBST(ADDITIONAL_INFO_PATH)])
