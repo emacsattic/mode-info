@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-index-coding-system): Abolished.
+
 	* mi-ruby.el (mode-info-ruby-titles): Change its default.
 
 	* mi-perl.el (mode-info-perl-titles): Change its default.

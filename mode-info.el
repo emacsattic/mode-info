@@ -63,12 +63,6 @@
   :group 'mode-info
   :type 'directory)
 
-(defcustom mode-info-index-coding-system
-  (mode-info-static-if (boundp 'MULE) '*iso-2022-jp* 'iso-2022-7bit)
-  "Coding system of index files."
-  :group 'mode-info
-  :type 'coding-system)
-
 (defcustom mode-info-split-window t
   "*Non-nil means window will be split vertically to display descriptions."
   :group 'mode-info
