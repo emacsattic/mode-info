@@ -39,7 +39,8 @@
   (autoload 'Info-index-next "info")
   (autoload 'Info-goto-node "info")
   (autoload 'Info-mode "info")
-  (autoload 'mode-info-make-index "mi-index"))
+  (autoload 'mode-info-make-index "mi-index")
+  (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
 (defconst mode-info-version "0.0.1"
   "Version number of `mode-info'.")
@@ -76,33 +77,52 @@
   :group 'mode-info
   :type 'boolean)
 
-(defvar mode-info-mode-alist
-  '((emacs-lisp-mode . elisp)
-    (lisp-interaction-mode . elisp)
-    (perl-mode . perl)
-    (cperl-mode . perl)
-    (eperl-mode . perl)
-    (c-mode . libc)
-    (ruby-mode . ruby)
-    (octave-mode . octave))
-  "Alist of major modes and mode-info backends.")
+(defcustom mode-info-class-alist
+  '((elisp emacs-lisp-mode lisp-interaction-mode)
+    (perl perl-mode cperl-mode eperl-mode)
+    (libc c-mode c++-mode)
+    (ruby ruby-mode)
+    (octave octave-mode))
+  "*Alist of mode-info classes and major modes."
+  :group 'mode-info
+  :type '(repeat (cons (symbol :tag "Class")
+		       (repeat (symbol :tag "Major mode")))))
 
-(defun mode-info-read-mode (&optional prompt)
-  (car (rassq (intern
-	       (completing-read (or prompt "Language: ")
-				(mapcar (lambda (x)
-					  (list (symbol-name (cdr x))))
-					mode-info-mode-alist)
-				nil t))
-	      mode-info-mode-alist)))
+(defun mode-info-default-class-name (&optional mode)
+  "Decide the default class based on MODE."
+  (unless mode
+    (setq mode major-mode))
+  (or (save-match-data
+	(and (eq mode major-mode)
+	     (eq mode 'Info-mode)
+	     (string-match "\\`\\*info\\*<\\([^>]*\\)>" (buffer-name))
+	     (mode-info-find-class (match-string 1 (buffer-name)))))
+      (catch 'found-default-class
+	(dolist (elem mode-info-class-alist)
+	  (when (memq mode (cdr elem))
+	    (throw 'found-default-class (car elem)))))))
 
-(defun mode-info-new (mode)
-  (let ((name (or (cdr (assq mode mode-info-mode-alist))
-		  'elisp)))
-    (or (mode-info-find-class name)
-	(progn
-	  (require (intern (concat "mi-" (symbol-name name))))
-	  (mode-info-find-class name)))))
+(defun mode-info-read-class-name (&optional prompt default)
+  (unless default
+    (setq default (mode-info-default-class-name)))
+  (let* ((table (mapcar (lambda (x)
+			  (cons (symbol-name (car x)) (car x)))
+			mode-info-class-alist))
+	 (x (completing-read (if prompt
+				 prompt
+			       (if default
+				   (format "Class (default %s): " default)
+				 "Class: "))
+			     table nil t)))
+    (if (string= x "") default (cdr (assoc x table)))))
+
+(defun mode-info-new (&optional name)
+  (unless name
+    (setq name (or (mode-info-default-class-name) 'elisp)))
+  (or (mode-info-find-class name)
+      (progn
+	(require (intern (concat "mi-" (symbol-name name))))
+	(mode-info-find-class name))))
 
 ;;; Declaration of basic class for mode-info backends.
 (mode-info-defgeneric index-file-name (class)
@@ -123,11 +143,11 @@
 (defmacro mode-info-variable-regexp (class)
   `(get ,class 'variable-regexp))
 
-(mode-info-defgeneric load-index (class)
+(mode-info-defgeneric load-index (class &optional force)
   "Load index of functions and variables described in Info.")
 
-(mode-info-defmethod load-index ((class mode-info))
-  (unless (get class 'index-file-loaded)
+(mode-info-defmethod load-index ((class mode-info) &optional force)
+  (unless (and (not force) (get class 'index-file-loaded))
     (let ((name (mode-info-index-file-name class))
 	  function-alist function-regexp
 	  variable-alist variable-regexp)
@@ -164,7 +184,14 @@ If that doesn't give a function, return nil.")
 	     predicate require-match)))
     (if (string= x "") default x)))
 
-(mode-info-defgeneric function-document (mode function)
+(mode-info-defgeneric function-described-p (class function)
+  "Return t if FUNCTION is described.")
+
+(mode-info-defmethod function-described-p ((class mode-info) function)
+  (mode-info-load-index class)
+  (and (assoc function (mode-info-function-alist class)) t))
+
+(mode-info-defgeneric function-document (class function)
   "Return the marker which points the top of the FUNCTION's document.")
 
 (mode-info-defmethod function-document ((class mode-info) function)
@@ -173,17 +200,18 @@ If that doesn't give a function, return nil.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
-(defun mode-info-describe-function (function &optional mode)
+(defun mode-info-describe-function (function &optional class-name)
   "Display the full documentation of FUNCTION (a symbol)."
   (interactive
-   (let ((mode (if current-prefix-arg (mode-info-read-mode) major-mode)))
-     (list (mode-info-read-function (mode-info-new mode) nil nil nil t)
-	   mode)))
+   (let ((name (if current-prefix-arg
+		   (mode-info-read-class-name)
+		 (mode-info-default-class-name))))
+     (list (mode-info-read-function (mode-info-new name) nil nil nil t)
+	   name)))
   (mode-info-show-document
    (save-excursion
      (save-window-excursion
-       (or (mode-info-function-document (mode-info-new (or mode major-mode))
-					function)
+       (or (mode-info-function-document (mode-info-new class-name) function)
 	   (error "Undocumented function: %s" function))))))
 
 (mode-info-defgeneric variable-at-point (mode)
@@ -211,6 +239,13 @@ Return nil if there is no such symbol.")
 	     predicate require-match)))
     (if (string= x "") default x)))
 
+(mode-info-defgeneric variable-described-p (class variable)
+  "Return t if VARIABLE is described.")
+
+(mode-info-defmethod variable-described-p ((class mode-info) variable)
+  (mode-info-load-index class)
+  (and (assoc variable (mode-info-variable-alist class)) t))
+
 (mode-info-defgeneric variable-document (mode variable)
   "Return the marker which points the top of the VARIABLE's document.")
 
@@ -220,17 +255,18 @@ Return nil if there is no such symbol.")
     (when entry
       (mode-info-goto-info-entry class entry))))
 
-(defun mode-info-describe-variable (variable &optional mode)
+(defun mode-info-describe-variable (variable &optional class-name)
   "Display the full documentation of VARIABLE (a symbol)."
   (interactive
-   (let ((mode (if current-prefix-arg (mode-info-read-mode) major-mode)))
-     (list (mode-info-read-variable (mode-info-new mode) nil nil nil t)
-	   mode)))
+   (let ((name (if current-prefix-arg
+		   (mode-info-read-class-name)
+		 (mode-info-default-class-name))))
+     (list (mode-info-read-variable (mode-info-new name) nil nil nil t)
+	   name)))
   (mode-info-show-document
    (save-excursion
      (save-window-excursion
-       (or (mode-info-variable-document (mode-info-new (or mode major-mode))
-					variable)
+       (or (mode-info-variable-document (mode-info-new class-name) variable)
 	   (error "Undocumented variable: %s" variable))))))
 
 (defun mode-info-show-document (marker)
