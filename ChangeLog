@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-emacs.el: New file.
+
 	* mi-elisp.el (toplevel): Add autoload for
 	`find-function-search-for-symbol'.  Remove useless autoloads.
 	(mode-info-elisp-titles): Change default value.  Refer
