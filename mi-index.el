@@ -209,7 +209,7 @@
 
 (defun mode-info-process-index-node-1 (title symbol entry node line)
   (when (string-match mode-info-index-entry-suffix-regexp entry)
-    (setq entry (substring entry (match-beginning 0))))
+    (setq entry (substring entry 0 (match-beginning 0))))
   (setq node (format "(%s)%s" title node)
 	line (string-to-number line))
   (let ((item (assoc entry (symbol-value symbol))))
