@@ -39,6 +39,8 @@
   (autoload 'Info-index-next "info")
   (autoload 'Info-goto-node "info")
   (autoload 'Info-mode "info")
+  (autoload 'find-tag-tag "etags")
+  (autoload 'find-tag-noselect "etags")
   (autoload 'mode-info-make-index "mi-index")
   (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
@@ -294,8 +296,25 @@ Return nil if there is no such symbol.")
 (mode-info-defgeneric read-tag (class)
   "Return the tag found around point.")
 
+(mode-info-defmethod read-tag ((class mode-info))
+  (find-tag-tag "Find tag: "))
+
 (mode-info-defgeneric find-tag-noselect (class tag)
   "Return a pair (BUFFER . POINT) represents TAG.")
+
+(mode-info-defmethod find-tag-noselect ((class mode-info) tag)
+  (condition-case err
+      (with-current-buffer (find-tag-noselect tag)
+	(cons (current-buffer) (point)))
+    (error
+     (let ((msg (error-message-string err))
+	   (ret))
+       (or (and (string= msg (format "No tags containing %s" tag))
+		(setq ret (or (mode-info-function-document class tag)
+			      (mode-info-variable-document class tag)))
+		(message msg)
+		ret)
+	   (signal (car err) (cdr err)))))))
 
 (mode-info-defgeneric find-tag-internal (class tag &optional keep-window)
   "Find TAG.")

@@ -1,17 +1,15 @@
 2002-07-19  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
-	* mode-info.el (function-document, variable-document): Changed the
-	spec of its return value.
+	* mode-info.el (toplevel): Add autoload for functions defined in
+	etags.el.
+	(function-document, variable-document): Changed the spec of its
+	return value.
 	(mode-info-show-document): Follow the above change.
 	(mode-info-goto-info-entry-1): Ditto.
 	(read-tag, find-tag-noselect, find-tag-internal): New method.
 	(mode-info-find-tag): New command.
 
 	* mi-util.el (mode-info-defgeneric): Changed error signal.
-
-	* mi-libc.el (toplevel): Add autoload for functions defined in
-	etags.el.
-	(read-tag, find-tag-noselect): New method.
 
 	* mi-elisp.el (toplevel): Add autoload for functions of
 	find-func.el.
