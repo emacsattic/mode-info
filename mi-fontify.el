@@ -25,7 +25,10 @@
 
 ;;; Commentary:
 
-;; This file contains stuffs to fontify Info pages.
+;; This file provides stuffs to fontify Info pages.  In order to use
+;; this program, put this expression to your ~/.emacs.
+;;
+;;     (require 'mi-fontify)
 
 
 ;;; Code:
