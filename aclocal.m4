@@ -110,7 +110,7 @@ AC_DEFUN(AC_PATH_INDEXDIR,
     AC_ARG_WITH(indexdir,
      [  --with-indexdir=DIR     directory for indices [\$(data-directory)/mode-info]],
       INDEXDIR="${withval}")
-    AC_MSG_CHECKING([where icon files should go])
+    AC_MSG_CHECKING([where index files should go])
     if test -z "${INDEXDIR}"; then
       dnl Set the default value.
       AC_EMACS_LISP(indexdir,
