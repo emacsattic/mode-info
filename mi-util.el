@@ -38,14 +38,29 @@
   (cond
    ((boundp 'MULE)
     (require 'poe)
-    (require 'pcustom))
-   ((featurep 'xemacs)
-    (require 'poe))))
+    (require 'pcustom))))
 
 (put 'mode-info-static-if 'lisp-indent-function 2)
 (defmacro mode-info-static-if (cond then &rest else)
   "Like `if', but evaluate COND at compile time."
   (if (eval cond) then `(progn ,@else)))
+
+(eval-and-compile
+  (unless (fboundp 'match-string-no-properties)
+    (defun match-string-no-properties (num &optional string)
+      "Return string of text matched by last search, without text properties.
+NUM specifies which parenthesized expression in the last regexp.
+ Value is nil if NUMth pair didn't match, or there were less than NUM pairs.
+Zero means the entire text matched by the whole regexp or whole string.
+STRING should be given if the last search was by `string-match' on STRING."
+      (if (match-beginning num)
+	  (if string
+	      (let ((result
+		     (substring string (match-beginning num) (match-end num))))
+		(set-text-properties 0 (length result) nil result)
+		result)
+	    (buffer-substring-no-properties (match-beginning num)
+					    (match-end num)))))))
 
 
 ;;; Object System:
