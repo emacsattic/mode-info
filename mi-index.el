@@ -49,7 +49,7 @@
   :type 'coding-system)
 
 (defun mode-info-make-all-indices ()
-  "Make indices of all available Info titles."
+  "Make indices of all available Info documents."
   (interactive)
   (dolist (elem mode-info-class-alist)
     (condition-case err
