@@ -1,5 +1,7 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* Release 0.0.4.
+
 	* mode-info.el (mode-info-class-alist): Add `emacs'.
 	(mode-info-show-document): Return the specified position if
 	success.
