@@ -110,9 +110,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (forward-line -1)
   (or (when (search-forward "not documented" nil t)
 	(let ((x (ignore-errors
-		   (let ((message-log-max
-			  (and debug-on-error message-log-max)))
-		     (find-function-noselect function)))))
+		   (find-function-noselect function))))
 	  (when x
 	    (message "%s is not documented" function)
 	    x)))
@@ -161,9 +159,7 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
   (forward-line -2)
   (or (when (search-forward "not documented as a variable." nil t)
 	(let ((x (ignore-errors
-		   (let ((message-log-max
-			  (and debug-on-error message-log-max)))
-		     (find-variable-noselect variable)))))
+		   (find-variable-noselect variable))))
 	  (when x
 	    (message "%s is not documented as a variable" variable)
 	    x)))
