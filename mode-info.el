@@ -199,6 +199,8 @@
   `(get ,class 'variable-alist))
 (defmacro mode-info-variable-regexp (class)
   `(get ,class 'variable-regexp))
+(defmacro mode-info-indexer-version (class)
+  `(get ,class 'indexer-version))
 
 (mode-info-defgeneric load-index (class &optional force)
   "Load index of functions and variables described in Info.")
@@ -206,10 +208,12 @@
 (mode-info-defmethod load-index ((class mode-info) &optional force)
   (unless (and (not force) (get class 'index-file-loaded))
     (let ((name (mode-info-index-file-name class))
+	  indexer-version
 	  function-alist function-regexp
 	  variable-alist variable-regexp)
       (when (file-exists-p name)
 	(load-file name)
+	(setf (mode-info-indexer-version class) indexer-version)
 	(setf (mode-info-function-alist class) function-alist)
 	(setf (mode-info-function-regexp class) function-regexp)
 	(setf (mode-info-variable-alist class) variable-alist)

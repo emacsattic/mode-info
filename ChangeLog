@@ -1,5 +1,8 @@
 2002-07-22  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-indexer-version): New macro.
+	(load-index): Set `indexer-version'.
+
 	* mi-config.el (mode-info-key-or-menu-binding): Export to
 	mi-util.el.
 
