@@ -33,7 +33,7 @@
 ;; This file provides interface commands of Info which describes Ruby.
 ;; It can be downloaded from:
 ;;
-;;     ftp://ftp.netlab.co.jp/pub/lang/ruby/doc/ruby-texi-1.4.tar.gz
+;;     ftp://ftp.ruby-lang.org/pub/ruby/doc/ruby-texi-1.4.tar.gz
 
 
 ;;; Code:
