@@ -1,5 +1,10 @@
 2002-07-30  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-index.el (make-index-file): When Emacs is running without
+	interactive terminal, do not load a generated index.
+	(write-index-file): Call `save-buffer' instead of `write-region'
+	in order to make a backup.
+
 	* mi-scheme.el, mi-guile.el: New file.
 
 	* mi-gauche.el: Reimplemented.

@@ -192,7 +192,8 @@
 		   (lambda (a b)
 		     (string< (downcase (car a)) (downcase (car b)))))))
       (mode-info-write-index-file class functions variables)
-      (mode-info-load-index class t))))
+      (unless noninteractive
+	(mode-info-load-index class t)))))
 
 (mode-info-defgeneric process-node (class title nodename functions variables)
   "Make index for functions and variables described in a node named NODENAME.")
@@ -278,7 +279,9 @@
     (mode-info-dump-symbols functions variables)
     (when regexp
       (mode-info-dump-symbols-as-regexp functions variables))
-    (write-region (point-min) (point-max) (mode-info-index-file-name class))))
+    (let ((make-backup-files (if (not noninteractive) make-backup-files)))
+      (set-visited-file-name (mode-info-index-file-name class) t)
+      (save-buffer))))
 
 (defun mode-info-dump-symbols (&rest symbols)
   (set (mode-info-static-if (>= emacs-major-version 20)
