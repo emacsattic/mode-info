@@ -1,5 +1,10 @@
 2003-01-13  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-index.el (make-index-file): Only when the entry regular
+	expression is defined, `process-node' method is called.
+	(mode-info-process-index-node-1): Strict checking the type of
+	`line'.
+
 	* mi-emacs.el (process-node): Abolished.
 
 	* mi-gauche.el (process-node): Abolished.

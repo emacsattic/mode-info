@@ -1,6 +1,6 @@
 ;;; mi-index.el --- Command to make indices of mode-info
 
-;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2002,2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Authors: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: info
@@ -162,14 +162,16 @@
 					  (1- (point))
 					(point-max)))
 		    (goto-char (point-min))
-		    (if (string-match mode-info-index-node-regexp nodename)
-			;; Hold index nodes.
-			(let ((temp-buffer (current-buffer)))
-			  (with-current-buffer buffer
-			    (goto-char (point-max))
-			    (insert-buffer temp-buffer)))
+		    (cond
+		     ((string-match mode-info-index-node-regexp nodename)
+		      ;; Hold index nodes.
+		      (let ((temp-buffer (current-buffer)))
+			(with-current-buffer buffer
+			  (goto-char (point-max))
+			  (insert-buffer temp-buffer))))
+		     ((mode-info-entry-regexp class)
 		      (mode-info-process-node class title nodename
-					      functions variables))
+					      functions variables)))
 		    (goto-char (point-max)))))))
 	  ;; Process index nodes.
 	  (with-current-buffer buffer
@@ -258,7 +260,7 @@
   (when (string-match mode-info-index-entry-suffix-regexp entry)
     (setq entry (substring entry 0 (match-beginning 0))))
   (setq node (format "(%s)%s" title node)
-	line (string-to-number line))
+	line (if (integerp line) line (string-to-number line)))
   (let ((item (assoc entry (symbol-value symbol))))
     (if item
 	(unless (member node (cdr item))
