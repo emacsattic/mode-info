@@ -1,6 +1,6 @@
 ;;; mode-info.el --- Describe functions and variables
 
-;; Copyright (C) 2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 1998-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: info
@@ -40,6 +40,9 @@
   (autoload 'Info-goto-node "info")
   (autoload 'Info-mode "info")
   (autoload 'mode-info-make-index "mi-index"))
+
+(defconst mode-info-version "0.0.1"
+  "Version number of `mode-info'.")
 
 (defgroup mode-info nil
   "Various sorts of improved help system for major modes."
@@ -135,12 +138,30 @@
 	(setf (mode-info-variable-regexp class) variable-regexp)
 	(put class 'index-file-loaded t)))))
 
-(mode-info-defgeneric function-at-point (mode)
+(mode-info-defgeneric function-at-point (class)
   "Return a function around point or else called by the list containing point.
 If that doesn't give a function, return nil.")
 
-(mode-info-defgeneric read-function (mode)
+(mode-info-defgeneric read-function (class &optional prompt default
+					   predicate require-match)
   "Read a function from the minibuffer.")
+
+(mode-info-defmethod read-function ((class mode-info) &optional prompt
+				    default predicate require-match)
+  (mode-info-load-index class)
+  (unless default
+    (setq default (mode-info-function-at-point class)))
+  (let* ((enable-recursive-minibuffers t)
+	 (x (completing-read
+	     (or prompt
+		 (if default
+		     (format "[%s] Describe function (default %s): "
+			     (mode-info-class-name class) default)
+		   (format "[%s] Describe function: "
+			   (mode-info-class-name class))))
+	     (mode-info-function-alist class)
+	     predicate require-match)))
+    (if (string= x "") default x)))
 
 (mode-info-defgeneric function-document (mode function)
   "Return the marker which points the top of the FUNCTION's document.")
@@ -155,7 +176,8 @@ If that doesn't give a function, return nil.")
   "Display the full documentation of FUNCTION (a symbol)."
   (interactive
    (let ((mode (if current-prefix-arg (mode-info-read-mode) major-mode)))
-     (list (mode-info-read-function (mode-info-new mode)) mode)))
+     (list (mode-info-read-function (mode-info-new mode) nil nil nil t)
+	   mode)))
   (mode-info-show-document
    (save-excursion
      (save-window-excursion
@@ -167,8 +189,26 @@ If that doesn't give a function, return nil.")
   "Return the bound variable symbol found around point.
 Return nil if there is no such symbol.")
 
-(mode-info-defgeneric read-variable (mode)
+(mode-info-defgeneric read-variable (class &optional prompt default
+					   predicate require-match)
   "Read a variable from the minibuffer.")
+
+(mode-info-defmethod read-variable ((class mode-info) &optional prompt
+				    default predicate require-match)
+  (mode-info-load-index class)
+  (unless default
+    (setq default (mode-info-variable-at-point class)))
+  (let* ((enable-recursive-minibuffers t)
+	 (x (completing-read
+	     (or prompt
+		 (if default
+		     (format "[%s] Describe variable (default %s): "
+			     (mode-info-class-name class) default)
+		   (format "[%s] Describe variable: "
+			   (mode-info-class-name class))))
+	     (mode-info-variable-alist class)
+	     predicate require-match)))
+    (if (string= x "") default x)))
 
 (mode-info-defgeneric variable-document (mode variable)
   "Return the marker which points the top of the VARIABLE's document.")
@@ -183,7 +223,8 @@ Return nil if there is no such symbol.")
   "Display the full documentation of VARIABLE (a symbol)."
   (interactive
    (let ((mode (if current-prefix-arg (mode-info-read-mode) major-mode)))
-     (list (mode-info-read-variable (mode-info-new mode)) mode)))
+     (list (mode-info-read-variable (mode-info-new mode) nil nil nil t)
+	   mode)))
   (mode-info-show-document
    (save-excursion
      (save-window-excursion
