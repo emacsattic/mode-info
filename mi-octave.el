@@ -55,7 +55,7 @@
   '("octave.info")
   "*Info titles about Octave."
   :group 'mode-info-octave
-  :type '(repeat string))
+  :type mode-info-titles-type)
 
 (defconst mode-info-octave-entry-regexp
   "^ +-.+\\(Command\\|Function\\|Keyword\\|Variable\\)[^:]*: +\\([^\n=]+= +\\)?\\([^ \t\n]+\\).*$")

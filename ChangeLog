@@ -1,5 +1,8 @@
 2002-07-20  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mi-octave.el (mode-info-octave-titles): Refer
+	`mode-info-title-types' as its type.
+
 	* mi-libc.el (mode-info-libc-titles): Refer
 	`mode-info-title-types' as its type.
 
