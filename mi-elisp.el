@@ -218,25 +218,39 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	       (message msg))
 	   (signal (car err) (cdr err)))))))))
 
+(mode-info-static-if (fboundp 'define-button-type)
+    (defalias 'mode-info-define-button-type 'define-button-type)
+  (defun mode-info-define-button-type (type &rest properties)
+    "Define a `button type' called NAME (dummy function)."
+    (put type 'mode-info-button properties))
+  (put 'mode-info-define-button-type 'lisp-indent-function 1))
+
+(mode-info-static-if (fboundp 'button-type-get)
+    (defalias 'mode-info-button-type-get 'button-type-get)
+  (defun mode-info-button-type-get (type prop)
+    "Get the property of button-type TYPE named PROP (dummy function)."
+    (plist-get (get type 'mode-info-button) prop)))
+
 ;; The original of this function is `help-insert-xref-button' defined
 ;; in help.el of Emacs-21.2.
-(defun mode-info-elisp-insert-button (string function data &optional help-echo)
+(defun mode-info-insert-button (string type data)
   "Insert STRING and make a hyperlink between `help-mode' buffers."
   (mode-info-static-if (fboundp 'help-xref-button)
       (let ((pos (point)))
 	(insert string)
 	(goto-char pos)
 	(search-forward string)
-	(mode-info-static-if (>= emacs-major-version 21)
-	    (help-xref-button 0 function data help-echo)
-	  (help-xref-button 0 function data)))
+	(mode-info-static-if (and (>= emacs-major-version 21)
+				  (not (fboundp 'define-button-type)))
+	    (help-xref-button 0 type data
+			      (mode-info-button-type-get type 'help-echo))
+	  (help-xref-button 0 type data)))
     (insert string)))
 
-(mode-info-static-when (fboundp 'define-button-type)
-  (define-button-type 'mode-info-describe-function
-    :supertype 'help-xref
-    'help-function 'mode-info-describe-function
-    'help-echo "mouse-2, RET: go to Info."))
+(mode-info-define-button-type 'mode-info-describe-function
+  :supertype 'help-xref
+  'help-function 'mode-info-describe-function
+  'help-echo "mouse-2, RET: go to Info.")
 
 (defun mode-info-elisp-add-function-button (function)
   (let ((buffer-read-only)
@@ -251,16 +265,14 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 		(end-of-line)
 		(insert " "))
 	    (insert (if (bolp) "\n" "\n\n")))
-	  (mode-info-elisp-insert-button "[info]"
-					 'mode-info-describe-function
-					 (list function class t)
-					 "mouse-2, Ret: go to Info."))))))
+	  (mode-info-insert-button "[info]"
+				   'mode-info-describe-function
+				   (list function class t)))))))
 
-(mode-info-static-when (fboundp 'define-button-type)
-  (define-button-type 'mode-info-describe-variable
-    :supertype 'help-xref
-    'help-function 'mode-info-describe-variable
-    'help-echo "mouse-2, RET: go to Info."))
+(mode-info-define-button-type 'mode-info-describe-variable
+  :supertype 'help-xref
+  'help-function 'mode-info-describe-variable
+  'help-echo "mouse-2, RET: go to Info.")
 
 (defun mode-info-elisp-add-variable-button (variable)
   (let ((buffer-read-only)
@@ -275,10 +287,9 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 		(end-of-line)
 		(insert " "))
 	    (insert (if (bolp) "\n" "\n\n")))
-	  (mode-info-elisp-insert-button "[info]"
-					 'mode-info-describe-variable
-					 (list variable class t)
-					 "mouse-2, Ret: go to Info."))))))
+	  (mode-info-insert-button "[info]"
+				   'mode-info-describe-variable
+				   (list variable class t)))))))
 
 (defun mode-info-elisp-info-ref (function)
   "Look up an Emacs Lisp function in the Elisp manual in the Info system."

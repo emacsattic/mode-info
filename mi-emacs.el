@@ -43,7 +43,6 @@
 (require 'mi-elisp)
 (eval-when-compile
   (require 'cl)
-  (require 'help)      ; For define-button-type() in Emacs-21.3.50.
   (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
 
@@ -89,11 +88,10 @@
 	     (mode-info-goto-info-entry class entry)))))
      t)))
 
-(mode-info-static-when (fboundp 'define-button-type)
-  (define-button-type 'mode-info-emacs-goto-info
-    :supertype 'help-xref
-    'help-function 'mode-info-emacs-goto-info
-    'help-echo "mouse-2, RET: go to Info."))
+(mode-info-define-button-type 'mode-info-emacs-goto-info
+  :supertype 'help-xref
+  'help-function 'mode-info-emacs-goto-info
+  'help-echo "mouse-2, RET: go to Info.")
 
 (defun mode-info-emacs-add-function-button (function)
   (let ((buffer-read-only)
@@ -108,10 +106,9 @@
 		(end-of-line)
 		(insert " "))
 	    (insert (if (bolp) "\n" "\n\n")))
-	  (mode-info-elisp-insert-button "[emacs-info]"
-					 'mode-info-emacs-goto-info
-					 (list function)
-					 "mouse-2, Ret: go to Info."))))))
+	  (mode-info-insert-button "[emacs-info]"
+				   'mode-info-emacs-goto-info
+				   (list function)))))))
 
 (defun mode-info-emacs-add-variable-button (variable)
   (let ((buffer-read-only)
@@ -126,10 +123,9 @@
 		(end-of-line)
 		(insert " "))
 	    (insert (if (bolp) "\n" "\n\n")))
-	  (mode-info-elisp-insert-button "[emacs-info]"
-					 'mode-info-emacs-goto-info
-					 (list variable t)
-					 "mouse-2, Ret: go to Info."))))))
+	  (mode-info-elisp-button "[emacs-info]"
+				  'mode-info-emacs-goto-info
+				  (list variable t)))))))
 
 (defun mode-info-emacs-make-index ()
   "Make index of Info files listed in `mode-info-emacs-titles'."

@@ -3,12 +3,18 @@
 	* mi-config.el (toplevel): Move button definitions to mi-elisp.el
 	and mi-emacs.el.
 
-	* mi-elisp.el (toplevel): Require help.el.  Import button
-	definitions from mi-config.el.
-	(mode-info-elisp-insert-button): Cancel the last change.
+	* mi-elisp.el (toplevel): Require help.el.  Import buttons.
+	(mode-info-define-button-type): New function.
+	(mode-info-button-type-get): Ditto.
+	(mode-info-insert-button): Simplified.  Renamed from
+	`mode-info-elisp-insert-button'.
+	(mode-info-elisp-add-function-button): Follow the change of
+	`mode-info-insert-button'.
+	(mode-info-elisp-add-variable-button): Ditto.
 
-	* mi-emacs.el (toplevel): Require help.el.  Import a button
-	definition from mi-config.el.
+	* mi-emacs.el (toplevel): Import a button.
+	(mode-info-emacs-add-function-button): Follow the change of
+	`mode-info-insert-button'.
 
 2004-11-14  Hiroya Murata  <lapis-lazuli@pop06.odn.ne.jp>
 
