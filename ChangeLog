@@ -1,5 +1,7 @@
 2003-01-13  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
+	* mode-info.el (mode-info-class-alist): Add make.
+
 	* mi-make.el: New file.
 
 	* mi-index.el (make-index-file): Only when the entry regular

@@ -1,6 +1,6 @@
 ;;; mode-info.el --- Describe functions and variables
 
-;; Copyright (C) 1998-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 1998-2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: info
@@ -137,10 +137,11 @@
 (defcustom mode-info-class-alist
   '((elisp  emacs-lisp-mode lisp-interaction-mode)
     (emacs  nil)
-    (perl   perl-mode cperl-mode eperl-mode)
     (libc   c-mode c++-mode)
-    (ruby   ruby-mode)
+    (make   makefile-mode)
     (octave octave-mode)
+    (perl   perl-mode cperl-mode eperl-mode)
+    (ruby   ruby-mode)
     (guile  scheme-mode scheme-interaction-mode inferior-scheme-mode)
     (gauche scheme-mode scheme-interaction-mode inferior-scheme-mode)
     (scheme scheme-mode scheme-interaction-mode inferior-scheme-mode))
@@ -349,11 +350,11 @@ Return nil if there is no such symbol.")
 (mode-info-defmethod describe-variable-internal ((class mode-info) variable
 						 &optional keep-window)
   (mode-info-show-document
-    (save-excursion
-      (save-window-excursion
-	(or (mode-info-variable-document class variable)
-	    (error "Undocumented variable: %s" variable))))
-    keep-window))
+   (save-excursion
+     (save-window-excursion
+       (or (mode-info-variable-document class variable)
+	   (error "Undocumented variable: %s" variable))))
+   keep-window))
 
 (defun mode-info-describe-variable (variable &optional class-name keep-window)
   "Display the full documentation of VARIABLE (a symbol)."
