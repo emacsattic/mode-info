@@ -1,6 +1,6 @@
 ;;; mi-elisp.el --- Mode-info backend for Emacs Lisp Reference Manual -*- coding: iso-2022-7bit; -*-
 
-;; Copyright (C) 1998-2002 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 1998-2006 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: emacs-lisp info
