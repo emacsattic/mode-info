@@ -220,30 +220,33 @@ Function\\|Special[ \t]+Form\\|Macro\\|\\(\\(Glob\\|Loc\\)al[ \t]+\\)?Variable\\
 	       (message msg))
 	   (signal (car err) (cdr err)))))))))
 
-(mode-info-static-if (fboundp 'define-button-type)
-    (defalias 'mode-info-define-button-type 'define-button-type)
-  (defun mode-info-define-button-type (type &rest properties)
-    "Define a `button type' called NAME (dummy function)."
-    (put type 'mode-info-button properties))
-  (put 'mode-info-define-button-type 'lisp-indent-function 1))
+(eval-and-compile
+  (if (fboundp 'define-button-type)
+      (defalias 'mode-info-define-button-type 'define-button-type)
+    (defun mode-info-define-button-type (type &rest properties)
+      "Define a `button type' called NAME (dummy function)."
+      (put type 'mode-info-button properties))
+    (put 'mode-info-define-button-type 'lisp-indent-function 1)))
 
-(mode-info-static-if (fboundp 'button-type-get)
-    (defalias 'mode-info-button-type-get 'button-type-get)
-  (defun mode-info-button-type-get (type prop)
-    "Get the property of button-type TYPE named PROP (dummy function)."
-    (plist-get (get type 'mode-info-button) prop)))
+(eval-and-compile
+  (if (fboundp 'button-type-get)
+      (defalias 'mode-info-button-type-get 'button-type-get)
+    (defun mode-info-button-type-get (type prop)
+      "Get the property of button-type TYPE named PROP (dummy function)."
+      (plist-get (get type 'mode-info-button) prop))))
 
 (mode-info-static-if (fboundp 'help-insert-xref-button)
-    (mode-info-static-if (fboundp 'define-button-type)
-	(defalias 'mode-info-insert-button 'help-insert-xref-button)
-      (defun mode-info-insert-button (string type &rest args)
-	"Insert STRING and make a hyperlink."
-	(help-insert-xref-button string
-				 (mode-info-button-type-get type
-							    'help-function)
-				 args
-				 (mode-info-button-type-get type
-							    'help-echo))))
+    (eval-and-compile
+      (if (fboundp 'define-button-type)
+	  (defalias 'mode-info-insert-button 'help-insert-xref-button)
+	(defun mode-info-insert-button (string type &rest args)
+	  "Insert STRING and make a hyperlink."
+	  (help-insert-xref-button string
+				   (mode-info-button-type-get type
+							      'help-function)
+				   args
+				   (mode-info-button-type-get type
+							      'help-echo)))))
   (mode-info-static-if (fboundp 'help-xref-button)
       ;; The function is designed for Emacs-20.x, based on
       ;; `help-insert-xref-button' defined in help.el of Emacs-21.2.
