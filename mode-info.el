@@ -1,6 +1,6 @@
 ;;; mode-info.el --- Describe functions and variables
 
-;; Copyright (C) 1998-2003 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 1998-2007 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 ;; Keywords: info
@@ -160,9 +160,11 @@
 	     (string-match "\\`\\*info\\*<\\([^>]*\\)>" (buffer-name))
 	     (mode-info-find-class (match-string 1 (buffer-name)))))
       (catch 'found-default-class
-	(dolist (elem mode-info-class-alist)
-	  (when (memq mode (cdr elem))
-	    (throw 'found-default-class (car elem))))
+	(while mode
+	  (dolist (elem mode-info-class-alist)
+	    (when (memq mode (cdr elem))
+	      (throw 'found-default-class (car elem))))
+	  (setq mode (get mode 'derived-mode-parent)))
 	mode-info-default-class)))
 
 (defvar mode-info-available-classes
