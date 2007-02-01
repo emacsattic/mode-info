@@ -20,7 +20,7 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, you can either send email to this
 ;; program's maintainer or write to: The Free Software Foundation,
-;; Inc.; 59 Temple Place, Suite 330; Boston, MA 02111-1307, USA.
+;; Inc.; 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
 
 ;;; Commentary:
@@ -100,7 +100,7 @@
   (autoload 'mode-info-make-index "mi-index")
   (autoload 'mode-info-make-all-indices "mi-index" nil t))
 
-(defconst mode-info-version "0.8.2"
+(defconst mode-info-version "0.8.3"
   "Version number of `mode-info'.")
 
 (defgroup mode-info nil
