@@ -69,23 +69,20 @@
   :group 'mode-info)
 
 (defvar mode-info-fontify-keywords
-  (eval-when-compile
-    (if (fboundp 'font-lock-compile-keywords)
-	(font-lock-compile-keywords
-	 `(("^\\(\\* \\)\\([^:]+:+\\)"
-	    (1 'mode-info-fontify-entry-face t)
-	    (2 'mode-info-fontify-entry-body-face t))
-	   ("^\\* Menu:$" 0 'mode-info-fontify-entry-face t)
-	   ("\\(\\*[Nn]ote\\b\\)\\([^:]+:+\\)"
-	    (1 'mode-info-fontify-xref-face t)
-	    (2 'mode-info-fontify-xref-body-face t))
-	   ("^ --? [A-Z]\\([A-Z.0-9]*\\|[a-z]*\\)\\( [A-Za-z][a-z]*\\)*\\( `[A-Za-z]*'\\)?:.*$"
-	    0 'mode-info-fontify-keyword-face t)
-	   (,(concat
-	      "^[ \t]-+[ \t]+"
-	      (regexp-opt '("プレフィックスコマンド" "コマンド") t)
-	      ":.*$")
-	    0 'mode-info-fontify-keyword-face t)))))
+  `(("^\\(\\* \\)\\([^:]+:+\\)"
+     (1 'mode-info-fontify-entry-face t)
+     (2 'mode-info-fontify-entry-body-face t))
+    ("^\\* Menu:$" 0 'mode-info-fontify-entry-face t)
+    ("\\(\\*[Nn]ote\\b\\)\\([^:]+:+\\)"
+     (1 'mode-info-fontify-xref-face t)
+     (2 'mode-info-fontify-xref-body-face t))
+    ("^ --? [A-Z]\\([A-Z.0-9]*\\|[a-z]*\\)\\( [A-Za-z][a-z]*\\)*\\( `[A-Za-z]*'\\)?:.*$"
+     0 'mode-info-fontify-keyword-face t)
+    (,(concat
+       "^[ \t]-+[ \t]+"
+       (regexp-opt '("プレフィックスコマンド" "コマンド") t)
+       ":.*$")
+     0 'mode-info-fontify-keyword-face t))
   "Rules for highlighting Info pages.")
 
 (let (current-load-list)
@@ -94,7 +91,8 @@
     "Advised by `mode-info'.
 Highlight Info pages based on the value of `mode-info-fontify-keywords'."
     (let ((buffer-read-only)
-	  (font-lock-keywords mode-info-fontify-keywords))
+	  (font-lock-defaults (list mode-info-fontify-keywords t)))
+      (font-lock-set-defaults)
       (font-lock-default-unfontify-region (point-min) (point-max))
       ad-do-it
       (font-lock-fontify-keywords-region (point-min) (point-max) nil)

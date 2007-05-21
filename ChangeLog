@@ -1,3 +1,11 @@
+2007-05-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-fontify.el: Changes to avoid stricten checking on
+	font-lock.el of Emacs-22.0.95.
+	(mode-info-fontify-keywords): Don't compile keywords when
+	byte-complation.
+	(mode-info-fontify-node): Call `font-lock-set-defaults'.
+
 2007-02-02  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mode-info.el (mode-info-version): Release 0.8.3.
