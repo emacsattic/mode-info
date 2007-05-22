@@ -69,30 +69,41 @@
   :group 'mode-info)
 
 (defvar mode-info-fontify-keywords
-  `(("^\\(\\* \\)\\([^:]+:+\\)"
-     (1 'mode-info-fontify-entry-face t)
-     (2 'mode-info-fontify-entry-body-face t))
-    ("^\\* Menu:$" 0 'mode-info-fontify-entry-face t)
-    ("\\(\\*[Nn]ote\\b\\)\\([^:]+:+\\)"
-     (1 'mode-info-fontify-xref-face t)
-     (2 'mode-info-fontify-xref-body-face t))
-    ("^ --? [A-Z]\\([A-Z.0-9]*\\|[a-z]*\\)\\( [A-Za-z][a-z]*\\)*\\( `[A-Za-z]*'\\)?:.*$"
+  `(("^ --? [A-Z]\\([A-Z.0-9]*\\|[a-z]*\\)\
+\\( [A-Za-z][a-z]*\\)*\\( `[A-Za-z]*'\\)?:.*$"
      0 'mode-info-fontify-keyword-face t)
     (,(concat
        "^[ \t]-+[ \t]+"
        (regexp-opt '("プレフィックスコマンド" "コマンド") t)
        ":.*$")
      0 'mode-info-fontify-keyword-face t))
-  "Rules for highlighting Info pages.")
+  "Rules for highlighting keywords in Info pages.")
+
+(defvar mode-info-fontify-references
+  `(("^\\(\\* \\)\\([^:]+:+\\)"
+     (1 'mode-info-fontify-entry-face t)
+     (2 'mode-info-fontify-entry-body-face t))
+    ("^\\* Menu:$" 0 'mode-info-fontify-entry-face t)
+    ("\\(\\*[Nn]ote\\b\\)\\([^:]+:+\\)"
+     (1 'mode-info-fontify-xref-face t)
+     (2 'mode-info-fontify-xref-body-face t)))
+  "Rules for highlighting references in Info pages.
+Note: this variable is ignored when using Emacs22 or later.")
 
 (let (current-load-list)
   (defadvice Info-fontify-node
     (around mode-info-fontify-node activate compile)
     "Advised by `mode-info'.
 Highlight Info pages based on the value of `mode-info-fontify-keywords'."
-    (let ((buffer-read-only)
-	  (font-lock-defaults (list mode-info-fontify-keywords t)))
-      (font-lock-set-defaults)
+    (let ((buffer-read-only))
+      (unless font-lock-set-defaults
+	(let ((font-lock-defaults
+	       (list (if (facep 'info-xref)
+			 mode-info-fontify-keywords
+		       (append mode-info-fontify-references
+			       mode-info-fontify-keywords))
+		     t)))
+	  (font-lock-set-defaults)))
       (font-lock-default-unfontify-region (point-min) (point-max))
       ad-do-it
       (font-lock-fontify-keywords-region (point-min) (point-max) nil)

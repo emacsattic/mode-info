@@ -44,11 +44,12 @@
 (require 'mode-info)
 (eval-when-compile
   (require 'cl)
-  (condition-case nil
-      (require 'help-mode) ; For `help-xref' button of Emacs-21.3.50.
-    (error nil))
   (require 'mi-config) ; For mode-info-with-help-buffer().
   (require 'mi-index))
+
+(condition-case nil
+    (require 'help-mode) ; For `help-xref' button of Emacs-21.3.50.
+  (error nil))
 
 (eval-and-compile
   (autoload 'find-function-search-for-symbol "find-func")

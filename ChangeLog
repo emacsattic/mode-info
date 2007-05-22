@@ -1,3 +1,17 @@
+2007-05-22  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-index.el (make-index-file): Don't call `insert-buffer' to
+	suppress a byte-compile warning.
+
+	* mi-fontify.el: Changes to support fancy Info pages provided by
+	Emacs22.
+	(mode-info-fontify-references): New variable.
+	(mode-info-fontify-keywords): Move several rules into the above.
+	(mode-info-fontify-node): Follow the above changes.
+
+	* mi-elisp.el (toplevel): Require `help-mode' even when loading
+	this module, in order to avoid byte-compile error of mi-emacs.el.
+
 2007-05-21  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mi-fontify.el: Changes to avoid stricten checking on

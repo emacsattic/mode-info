@@ -165,10 +165,10 @@
 		    (cond
 		     ((string-match mode-info-index-node-regexp nodename)
 		      ;; Hold index nodes.
-		      (let ((temp-buffer (current-buffer)))
+		      (let ((str (buffer-substring (point-min) (point-max))))
 			(with-current-buffer buffer
 			  (goto-char (point-max))
-			  (insert-buffer temp-buffer))))
+			  (insert str))))
 		     ((mode-info-entry-regexp class)
 		      (mode-info-process-node class title nodename
 					      functions variables)))
