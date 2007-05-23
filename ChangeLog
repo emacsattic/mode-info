@@ -1,3 +1,7 @@
+2007-05-23  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mode-info.el (mode-info-version): Release 0.8.4.
+
 2007-05-22  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mi-index.el (make-index-file): Don't call `insert-buffer' to
