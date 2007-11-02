@@ -79,18 +79,15 @@
 (mode-info-defclass libc)
 
 (defun mode-info-libc-word-at-point (alist)
-  (let ((orig-table (copy-syntax-table))
-	(orig-point (point)))
-    (unwind-protect
-	(let (word)
-	  (modify-syntax-entry ?_ "w")
-	  (or (looking-at "\\<") (forward-word -1))
-	  (if (assoc (setq word (buffer-substring-no-properties
+  (save-excursion
+    (mode-info-save-syntax-table
+      (let (word)
+	(modify-syntax-entry ?_ "w")
+	(or (looking-at "\\<") (forward-word -1))
+	(when (assoc (setq word (buffer-substring-no-properties
 				 (point) (progn (forward-word 1) (point))))
 		     alist)
-	      word))
-      (goto-char orig-point)
-      (set-syntax-table orig-table))))
+	  word)))))
 
 (mode-info-defmethod function-at-point ((class libc))
   (mode-info-load-index class)

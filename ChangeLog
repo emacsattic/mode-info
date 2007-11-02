@@ -1,3 +1,18 @@
+2007-11-02  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
+
+	* mi-util.el (mode-info-save-syntax-table): New macro, which is
+	introduced to avoid breaking the syntax table in the current
+	buffer.
+
+	* mi-libc.el (mode-info-libc-word-at-point): Use
+	`mode-info-save-syntax-table'.
+
+	* mi-perl.el (mode-info-perl-word-at-point): Use
+	`mode-info-save-syntax-table'.
+
+	* mi-ruby.el (mode-info-ruby-word-at-point): Use
+	`mode-info-save-syntax-table'.
+
 2007-05-23  TSUCHIYA Masatoshi  <tsuchiya@namazu.org>
 
 	* mode-info.el (mode-info-version): Release 0.8.4.

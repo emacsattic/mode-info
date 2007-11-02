@@ -61,27 +61,24 @@ Local[ \t]+Variable\\|User[ \t]+Option\\):[ \t]+\\([^ \t\n]+\\)[ \t\n]")
 (defconst mode-info-perl-entry-pos 2)
 
 (defun mode-info-perl-word-at-point (alist)
-  (let ((orig-table (copy-syntax-table))
-	(orig-point (point)))
-    (unwind-protect
-	(let (word)
-	  (modify-syntax-entry ?$ "w")
-	  (modify-syntax-entry ?@ "w")
-	  (modify-syntax-entry ?% "w")
-	  (modify-syntax-entry ?# "w")
-	  (modify-syntax-entry ?_ "w")
-	  (modify-syntax-entry ?^ "w")
-	  (modify-syntax-entry ?: "w")
-	  (modify-syntax-entry ?& "w")
-	  (modify-syntax-entry ?/ "w")
-	  (modify-syntax-entry ?! "w")
-	  (or (looking-at "\\<") (forward-word -1))
-	  (if (assoc (setq word (buffer-substring-no-properties
+  (save-excursion
+    (mode-info-save-syntax-table
+      (let (word)
+	(modify-syntax-entry ?$ "w")
+	(modify-syntax-entry ?@ "w")
+	(modify-syntax-entry ?% "w")
+	(modify-syntax-entry ?# "w")
+	(modify-syntax-entry ?_ "w")
+	(modify-syntax-entry ?^ "w")
+	(modify-syntax-entry ?: "w")
+	(modify-syntax-entry ?& "w")
+	(modify-syntax-entry ?/ "w")
+	(modify-syntax-entry ?! "w")
+	(or (looking-at "\\<") (forward-word -1))
+	(when (assoc (setq word (buffer-substring-no-properties
 				 (point) (progn (forward-word 1) (point))))
 		     alist)
-	      word))
-      (goto-char orig-point)
-      (set-syntax-table orig-table))))
+	  word)))))
 
 (mode-info-defclass perl)
 

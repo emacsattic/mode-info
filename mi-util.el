@@ -57,6 +57,18 @@
   "Like `when', but evaluate COND at compile time."
   (if (eval cond) `(progn ,@body)))
 
+(put 'mode-info-save-syntax-table 'edebug-form-spec '(body))
+(put 'mode-info-save-syntax-table 'lisp-indent-function 0)
+(defmacro mode-info-save-syntax-table (&rest body)
+  "Save syntax table of this current buffer; execute BODY; restore it."
+  (let ((orig-table (make-symbol "orig-table")))
+    `(let ((,orig-table (syntax-table)))
+       (unwind-protect
+	   (progn
+	     (set-syntax-table (copy-syntax-table))
+	     ,@body)
+	 (set-syntax-table ,orig-table)))))
+
 (eval-and-compile
   (unless (fboundp 'match-string-no-properties)
     (defun match-string-no-properties (num &optional string)

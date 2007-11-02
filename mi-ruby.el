@@ -68,17 +68,14 @@
 (mode-info-defclass ruby)
 
 (defun mode-info-ruby-word-at-point (regexp)
-  (let ((orig-table (copy-syntax-table))
-	(orig-point (point)))
-    (unwind-protect
-	(let ((case-fold-search nil))
-	  (modify-syntax-entry ?$ "w")
-	  (modify-syntax-entry ?@ "w")
-	  (and (forward-word 1)
-	       (re-search-backward regexp nil t)
-	       (match-string-no-properties 1)))
-      (goto-char orig-point)
-      (set-syntax-table orig-table))))
+  (save-excursion
+    (mode-info-save-syntax-table
+      (let ((case-fold-search nil))
+	(modify-syntax-entry ?$ "w")
+	(modify-syntax-entry ?@ "w")
+	(and (forward-word 1)
+	     (re-search-backward regexp nil t)
+	     (match-string-no-properties 1))))))
 
 (mode-info-defmethod function-at-point ((class ruby))
   (mode-info-load-index class)
